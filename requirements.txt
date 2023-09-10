@@ -1,0 +1,7 @@
+langchain[all]
+llama-index
+streamlit
+openai
+streamlit-chat
+llama-hub
+ruff
