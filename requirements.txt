@@ -5,3 +5,5 @@ openai
 streamlit-chat
 llama-hub
 ruff
+beautifulsoup4
+argparse
