@@ -29,7 +29,7 @@
 ## 検証手法
 * 検証コードの実行コマンド
   ```bash
-  streamlit run  validate_exec_command_contextless.py
+  streamlit run src/validate_exec_command_contextless.py
   ```
 * 実際のAWS環境を用意し、EC2インスタンスに関して質問し、`describe-instances`コマンドを使用して所望の情報を取得できるかを検証
 * 質問は、案件のコンテキストに関する情報は使用せず、具体性をもった質問で実施

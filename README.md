@@ -16,12 +16,12 @@
 
 ## 実行
 ```bash
-streamlit run <pythonファイル名>
+streamlit run <pythonファイルのパス>
 ```
 
 ## 検証レポート
-* ✅ [文量がインデックス化に与える影響の検証](./report_doc_num.md)
-* ✅ [コンテキストなしの自然言語からAWS CLIのコマンドを実行させる検証](./report_exec_command_contextless.md)
+* ✅ [文量がインデックス化に与える影響の検証](./repo/report_doc_num.md)
+* ✅ [コンテキストなしの自然言語からAWS CLIのコマンドを実行させる検証](./repo/report_exec_command_contextless.md)
 * ⌨ 全文書をインデックス化した場合の検証
 * 🔜 コンテキストのインデックス化方法の検証
 * 🔜 コンテキストつきの自然言語からAWS CLIのコマンドを実行させる検証
