@@ -11,9 +11,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.schema import AIMessage, HumanMessage
 from langchain.tools import tool, ShellTool
 from llama_index import (
-    GPTVectorStoreIndex,
     ServiceContext,
-    SimpleWebPageReader,
     StorageContext,
     LLMPredictor,
     load_index_from_storage,
@@ -30,57 +28,30 @@ def set_config():
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--storage-id",
+        "--llm",
         type=str,
-        default="doc_num",
-        help="storage配下のディレクトリ名を指定します。"
+        default="gpt-4",
+        help="推論用LLM名を指定します。"
+    )
+    parser.add_argument(
+        "--index-dir",
+        type=str,
+        default="test_index",
+        help="インデックスのJsonファイルのディレクトリ名を指定します。"
     )
     return parser.parse_args()
 
 
-def get_urls(path):
-    with open(path, "r") as f:
-        urls = [s.rstrip() for s in f.readlines()]
-    return urls
-
-
-def get_document(urls):
-    return SimpleWebPageReader(html_to_text=True).load_data(urls)
-
-
-def get_index(documents):
-    return GPTVectorStoreIndex.from_documents(documents)
-
-
-def load_index(storage_context):
-    return load_index_from_storage(
-        storage_context,
-        index_id=VALIDATION_ID,
-    )
-
-
 set_config()
 
-VALIDATION_ID = "doc_num"
-PREDECTOR_MODEL = "gpt-3.5-turbo"
-#PREDECTOR_MODEL = "gpt-4"
-print(PREDECTOR_MODEL)
-llm = ChatOpenAI(temperature=0, model=PREDECTOR_MODEL)
-
 args = get_args()
+llm = ChatOpenAI(temperature=0, model=args.llm)
 
-storage_dir = Path("./storage") / args.storage_id
-
-# storage contextが無ければ作成し、indexをロード
-if storage_dir.exists():
-    storage_context = StorageContext.from_defaults(persist_dir=str(storage_dir))
-    index = load_index(storage_context)
-else:
-    raise RuntimeError(f"{storage_dir}が存在しません。")
-
+storage_dir = Path("./storage") / args.index_dir
+storage_context = StorageContext.from_defaults(persist_dir=str(storage_dir))
+index = load_index_from_storage(storage_context, index_id=args.index_dir)
 llm_predictor = LLMPredictor(llm=llm)
 service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
-
 query_engine = index.as_query_engine(service_context=service_context)
 
 

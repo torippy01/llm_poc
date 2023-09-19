@@ -12,9 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.schema import AIMessage, HumanMessage
 from langchain.tools import tool
 from llama_index import (
-    GPTVectorStoreIndex,
     ServiceContext,
-    SimpleWebPageReader,
     StorageContext,
     LLMPredictor,
     load_index_from_storage,
@@ -31,75 +29,30 @@ def set_config():
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--max-urls",
-        type=int,
-        default=10,
-        help="インデックス化するURLの件数を指定します。"
+        "--llm",
+        type=str,
+        default="gpt-4",
+        help="推論用LLM名を指定します。"
+    )
+    parser.add_argument(
+        "--index-dir",
+        type=str,
+        default="test_index",
+        help="インデックスのJsonファイルのディレクトリ名を指定します。"
     )
     return parser.parse_args()
 
 
-def get_urls(path):
-    with open(path, "r") as f:
-        urls = [s.rstrip() for s in f.readlines()]
-    return urls
-
-
-def get_document(urls):
-    return SimpleWebPageReader(html_to_text=True).load_data(urls)
-
-
-def get_index(documents):
-    return GPTVectorStoreIndex.from_documents(documents)
-
-
-def count_token(documents):
-    token_count = 0
-    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
-    for document in documents:
-        transcription = str(document.text)
-        tokens = encoding.encode(transcription)
-        token_count += len(tokens)
-    return token_count
-
-
-def create_storage_context(max_urls):
-    urls = get_urls("./urls.txt")[:max_urls]
-    documents = get_document(urls)
-    token_count = count_token(documents)
-    print(f"{token_count=}")
-    index = get_index(documents)
-    index.set_index_id(VALIDATION_ID)
-    index.storage_context.persist(f"storage/{VALIDATION_ID}")
-    return StorageContext.from_defaults(persist_dir=f"storage/{VALIDATION_ID}")
-
-
-def load_index(storage_context):
-    return load_index_from_storage(
-        storage_context,
-        index_id=VALIDATION_ID,
-    )
-
-
 set_config()
 
-VALIDATION_ID = "doc_num"
 args = get_args()
-llm = ChatOpenAI(temperature=0)  # デフォルトで"gpt-3.5-turbo"を使用
+llm = ChatOpenAI(temperature=0, model=args.llm)
 
-storage_dir = Path("./storage") / VALIDATION_ID
-
-# storage contextが無ければ作成し、indexをロード
-if storage_dir.exists():
-    storage_context = StorageContext.from_defaults(persist_dir=str(storage_dir))
-    index = load_index(storage_context)
-else:
-    storage_context = create_storage_context(args.max_urls)
-    index = load_index(storage_context)
-
+storage_dir = Path("./storage") / args.index_dir
+storage_context = StorageContext.from_defaults(persist_dir=str(storage_dir))
+index = load_index_from_storage(storage_context, index_id=args.index_dir)
 llm_predictor = LLMPredictor(llm=llm)
 service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
-
 query_engine = index.as_query_engine(service_context=service_context)
 
 
