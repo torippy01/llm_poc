@@ -1,6 +1,5 @@
 import argparse
 import os
-import tiktoken
 import time
 
 import openai

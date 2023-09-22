@@ -45,7 +45,7 @@ def get_args():
 set_config()
 
 args = get_args()
-llm = ChatOpenAI(temperature=0, model=args.llm)
+llm = ChatOpenAI(temperature=0, model_name=args.llm)
 
 storage_dir = Path("./storage") / args.index_dir
 storage_context = StorageContext.from_defaults(persist_dir=str(storage_dir))
