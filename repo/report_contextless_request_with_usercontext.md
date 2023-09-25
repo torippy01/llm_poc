@@ -13,7 +13,7 @@
 * 前回の検証で得た回答と比較し、回答精度に影響が及んでいるかを確認
 
 ## 検証結果
-* [検証結果](./appendix_contextless_using_usercontext.md)
+* [検証結果](./results/result_contextless_using_usercontext.md)
 
 ## まとめと感想
 ### 全般
