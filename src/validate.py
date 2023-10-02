@@ -1,7 +1,7 @@
 """
 python src/validate.py \
     --aws-index-dir aws_ref \
-    --qa repo/qa/test.yaml
+    --qa repo/qa/qa1.yaml
 """
 
 import argparse
@@ -14,7 +14,7 @@ import openai
 from dotenv import load_dotenv
 from langchain.agents import initialize_agent
 from langchain.chat_models import ChatOpenAI
-from langchain.tools import tool, ShellTool
+from langchain.tools import ShellTool
 from llama_index import (
     ServiceContext,
     StorageContext,
@@ -25,6 +25,8 @@ from pathlib import Path
 
 from utils.generate_markdown import gen_md
 from utils.schema import Experiment
+from utils.tools import CustomTool
+
 
 def set_config():
     load_dotenv()
@@ -86,51 +88,21 @@ def get_query_engine(index_dir, llm):
     return index.as_query_engine(service_context=service_context)
 
 
-set_config()
-
-args = get_args()
-
-llm = ChatOpenAI(temperature=0, model_name=args.llm)
-
-aws_query_engine = get_query_engine(args.aws_index_dir, llm)
-user_query_engine = get_query_engine(args.user_index_dir, llm)
-
-# プロンプトから該当するAWSコマンドを推定するツール
-@tool
-def command_predictor(query: str):
-    """
-    AWS CLIコマンドを取得するツール
-    """
-    response = aws_query_engine.query(query)
-    return response.response
-
-
-# プロンプトからAWSコマンドの引数を推定するツール
-@tool
-def parameter_predictor_from_query(query: str):
-    """
-    AWS CLIコマンドの引数を取得するツール
-    """
-    response = aws_query_engine.query(query)
-    return response.response
-
-
-@tool
-def user_context_predictor(query: str):
-    """
-    ユーザーしか知らない知識を取得するツール
-    """
-    response = user_query_engine.query(query)
-    return response.response
-
-
 def main():
+    set_config()
+    args = get_args()
+    llm = ChatOpenAI(temperature=0, model_name=args.llm)
+
+    aws_query_engine = get_query_engine(args.aws_index_dir, llm)
+    user_query_engine = get_query_engine(args.user_index_dir, llm)
+
     # Lang Chainで用いるツール群を定義
     shell_tool = ShellTool()
+
     tools = [
-        command_predictor,
-        parameter_predictor_from_query,
-        user_context_predictor,
+        CustomTool.command_predictor(aws_query_engine),
+        CustomTool.parameter_predictor_from_query(aws_query_engine),
+        CustomTool.user_context_predictor(user_query_engine),
         shell_tool
     ]
 
@@ -163,6 +135,7 @@ def main():
             "question": question,
             "final_answer": response["output"],
             "answer": qa["answer"],
+            "evaluation": None,
         })
 
     experiment = Experiment(

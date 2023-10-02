@@ -49,7 +49,7 @@ def gen_md(results: List[Dict], experiment: Experiment) -> None:
         file_name=experiment.md_filepath,
         title=experiment.md_title
     )
-    print(type(mdFile))
+
     mdFile.new_line()
     mdFile.new_header(
         level=3,
