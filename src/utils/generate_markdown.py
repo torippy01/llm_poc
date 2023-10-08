@@ -1,8 +1,7 @@
-from typing import Dict, List
-
+from typing import List
+from langchain.schema import HumanMessage, AIMessage
 from mdutils.mdutils import MdUtils
-from utils.schema import Experiment
-
+from utils.schema import Experiment, ConversationLog
 
 
 def sep_md(mdFile: MdUtils) -> None:
@@ -11,40 +10,51 @@ def sep_md(mdFile: MdUtils) -> None:
     mdFile.new_line()
 
 
-def _gen_md(mdFile: MdUtils, result: Dict) -> None:
-    question = result["response"]["input"]
-    intermediate_steps = result["response"]["intermediate_steps"]
-    final_answer = result["response"]["output"]
-    elapsed_time = result["elapsed_time"]
+def _gen_md(mdFile: MdUtils, conversation_log: ConversationLog) -> None:
 
     mdFile.new_header(
         level=2,
-        title=f"質問: {question}",
+        title=f"質問: {conversation_log.input}",
         add_table_of_contents="n"
     )
 
-    mdFile.new_line(f"実行時間: `{elapsed_time}`")
+    mdFile.new_line(f"実行時間: `{conversation_log.elapsed_time}`")
 
-    for step in intermediate_steps:
-        (agent_action, answer) = step
+    if (
+        conversation_log.chat_history and
+        conversation_log.intermediate_steps is None
+    ):
+        for chat in conversation_log.chat_history:
+            if isinstance(chat, HumanMessage):
+                mdFile.new_line(f"human message: `{chat.content}`")
+            if isinstance(chat, AIMessage):
+                mdFile.new_line(f"AI message: `{chat.content}`")
 
-        tool = agent_action.tool
-        tool_input = agent_action.tool_input
-        log = agent_action.log
+    elif conversation_log.intermediate_steps:
+        for step in conversation_log.intermediate_steps:
+            (agent_action, answer) = step
 
-        mdFile.new_line(f"tool: `{tool}`")
-        mdFile.new_line(f"tool input: `{tool_input}`")
-        mdFile.new_line("log:")
-        mdFile.insert_code(log, language="bash")
-        mdFile.new_line("answer: ")
-        mdFile.insert_code(answer, language="bash")
-        sep_md(mdFile)
+            tool = agent_action.tool
+            tool_input = agent_action.tool_input
+            terminal_text = agent_action.log
+
+            mdFile.new_line(f"tool: `{tool}`")
+            mdFile.new_line(f"tool input: `{tool_input}`")
+            mdFile.new_line("log:")
+            mdFile.insert_code(terminal_text, language="bash")
+            mdFile.new_line("answer: ")
+            mdFile.insert_code(answer, language="bash")
+            sep_md(mdFile)
+
     mdFile.new_line("final answer:")
-    mdFile.insert_code(final_answer, language="bash")
+    mdFile.insert_code(conversation_log.output, language="bash")
     mdFile.new_line()
 
 
-def gen_md(results: List[Dict], experiment: Experiment) -> None:
+def gen_md(
+        conversation_logs: List[ConversationLog],
+        experiment: Experiment
+) -> None:
     mdFile = MdUtils(
         file_name=experiment.md_filepath,
         title=experiment.md_title
@@ -63,12 +73,13 @@ def gen_md(results: List[Dict], experiment: Experiment) -> None:
             f"エージェントタイプ: `{experiment.agent_type}`",
             f"ユーザーコンテキスト: `{experiment.user_index_dir}`",
             f"AWSコンテキスト: `{experiment.aws_index_dir}`",
+            f"ツール: `{experiment.tool_names}`",
         ]
     )
 
     sep_md(mdFile)
 
-    for result in results:
-        _gen_md(mdFile, result)
+    for log in conversation_logs:
+        _gen_md(mdFile, log)
 
     mdFile.create_md_file()
