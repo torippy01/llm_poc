@@ -164,4 +164,5 @@ cython_debug/
 agent/
 doc/
 storage/
-aws_ref_text/
+aws_context/
+eval_sentence/
