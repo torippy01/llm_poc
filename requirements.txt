@@ -1,4 +1,5 @@
-langchain[all]
+langchain
+langchainhub
 llama-index
 streamlit
 openai
