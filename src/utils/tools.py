@@ -46,5 +46,5 @@ def user_context_predictor_wrapper(query_engine):
 class CustomTool:
     query_engine: RetrieverQueryEngine
     command_predictor: Callable = command_predictor_wrapper
-    parameter_predictor_from_query: Callable = parameter_predictor_wrapper
+    parameter_predictor: Callable = parameter_predictor_wrapper
     user_context_predictor: Callable = user_context_predictor_wrapper
