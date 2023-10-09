@@ -6,33 +6,20 @@ python src/validate.py \
 
 import argparse
 import os
-import time
-import yaml
-
 import openai
-
-from typing import Callable, Any, Tuple, List
 
 from dotenv import load_dotenv
 
-from langchain import hub
-from langchain.agents import initialize_agent, load_tools, AgentExecutor
-from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
-from langchain.agents.format_scratchpad import format_log_to_str
+from langchain.agents import load_tools
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import ShellTool
-from langchain.tools.render import render_text_description
 from langchain.memory import ConversationBufferMemory
 
 from utils.generate_markdown import gen_md
-from utils.schema import (
-    Experiment,
-    ConversationLog,
-    EvaluateSentence,
-    EvaluateSentences
-)
+from utils.schema import Experiment
 from utils.tools import CustomTool
 from utils.query_engines import get_query_engine
+from utils.agents import AgentExecutorConfig, AgentExecutorGen, AgentRunner
 
 
 def set_config():
@@ -131,13 +118,6 @@ def get_args():
     return parser.parse_args()
 
 
-def time_measurement(func: Callable, val: Any) -> Any:
-    start = time.time()
-    response = func(**val)
-    elapsed_time = time.time() - start
-    return response, elapsed_time
-
-
 def get_input():
     print(
         "Insert your text. Enter 'q' or press Ctrl-D (or Ctrl-Z on Windows) "
@@ -152,90 +132,6 @@ def get_input():
             break
         contents.append(line)
     return "\n".join(contents)
-
-
-def run_agent_with_interactive(
-        agent: AgentExecutor
-) -> Tuple[List[ConversationLog], EvaluateSentences]:
-
-    conversation_log = list()
-    e_sentences = EvaluateSentences()
-
-    while True:
-        print(
-            "AIへのメッセージを書いてください。\n"
-            "終了する場合は'exit'と入力してください。"
-        )
-
-        user_message = input()
-        if user_message == "exit":
-            break
-
-        response, elapsed_time = time_measurement(
-            agent.invoke,
-            {"input": {"input": user_message}}
-        )
-
-        conversation_log.append(
-            ConversationLog(
-                input=response.get("input"),
-                output=response.get("output"),
-                intermediate_steps=response.get("intermediate_steps", None),
-                chat_history=response.get("chat_history", None),
-                elapsed_time=elapsed_time
-            )
-        )
-
-        e_sentences.append(
-            EvaluateSentence(
-                input=response.get("input"),
-                output=response.get("output"),
-                human_answer=None,
-                evaluation=None
-            )
-        )
-    return conversation_log, e_sentences
-
-
-def run_agent_with_Q_and_A(
-        agent: AgentExecutor
-) -> Tuple[List[ConversationLog], EvaluateSentences]:
-
-    conversation_log = list()
-    e_sentences = EvaluateSentences()
-
-    # QAのyamlファイルをオープン
-    with open(args.qa) as f:
-        qas = yaml.safe_load(f)
-
-    # 質問群に対してエージェントが回答
-    # 回答結果をQAに追加
-    for qa in qas:
-        user_message = qa["question"]
-        response, elapsed_time = time_measurement(
-            agent.invoke,
-            {"input": {"input": user_message}}
-        )
-
-        conversation_log.append(
-            ConversationLog(
-                input=response.get("input"),
-                output=response.get("output"),
-                intermediate_steps=response.get("intermediate_steps", None),
-                chat_history=response.get("chat_history", None),
-                elapsed_time=elapsed_time
-            )
-        )
-
-        e_sentences.append(
-            EvaluateSentence(
-                input=response.get("input"),
-                output=response.get("output"),
-                human_answer=qa["answer"],
-                evaluation=None
-            )
-        )
-    return conversation_log, e_sentences
 
 
 def main(args):
@@ -265,48 +161,21 @@ def main(args):
         output_key="output",
     )
 
-    return_intermediate_steps = False if args.agent_type in [
-        "conversational-react-description"
-    ] else True
+    agent_executor_conf = AgentExecutorConfig(
+        llm=llm,
+        tools=tools,
+        memory=memory,
+        agent_type=args.agent_type,
+        pull=args.pull
+    )
 
+    agent_executor = AgentExecutorGen(agent_executor_conf).generate()
 
-    if args.pull:
-        prompt = hub.pull(args.pull)
-        prompt = prompt.partial(
-            tools=render_text_description(tools),
-            tool_names=", ".join([t.name for t in tools]),
-        )
-        llm_with_stop = llm.bind(stop=["\nObservation"])
-        agent = {
-            "input": lambda x: x["input"],
-            "agent_scratchpad": lambda x: format_log_to_str(x['intermediate_steps']),
-            "chat_history": lambda x: x["chat_history"]
-        } | prompt | llm_with_stop | ReActSingleInputOutputParser()
-        agent_executor = AgentExecutor(
-            agent=agent,
-            tools=tools,
-            verbose=True,
-            memory=memory
-        )
-
-    else:
-        agent = args.agent_type
-        agent_executor = initialize_agent(
-            agent=agent,
-            tools=tools,
-            llm=llm,
-            memory=memory,
-            verbose=True,
-            return_intermediate_steps=return_intermediate_steps,
-        )
-
-    # インタラクティブモード
-    if args.interactive:
-        (conversation_log, e_sentences) = run_agent_with_interactive(agent_executor)
-
-    # 事前に準備したユーザーメッセージに対して回答
-    else:
-        (conversation_log, e_sentences) = run_agent_with_Q_and_A(agent_executor)
+    conversation_log, e_sentences = AgentRunner(
+        agent_executor=agent_executor,
+        is_intaractive=args.interactive,
+        qa_yaml=args.qa,
+    ).run()
 
     experiment = Experiment(
         md_filepath=args.md_filepath,
@@ -324,7 +193,7 @@ def main(args):
     )
 
     e_sentences.to_yaml(
-        yaml_filepath="repo/ai_answer/test_ai_answer.yaml"
+        yaml_filepath="eval_sentence/test_ai_answer.yaml"
     )
 
 
