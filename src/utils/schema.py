@@ -1,3 +1,4 @@
+import yaml
 from dataclasses import dataclass
 from typing import List, Optional, Union, Dict, Sequence
 from langchain.schema import HumanMessage, AIMessage, AgentAction
@@ -41,13 +42,42 @@ class EvaluateSentence:
 class EvaluateSentences:
     def __init__(self):
         self.evaluation_sentences: List[EvaluateSentence] = []
+        self.iter_cnt: int = 0
 
 
     def append(self, evaluation_sentence: EvaluateSentence) -> None:
         self.evaluation_sentences.append(evaluation_sentence)
 
 
-    def to_list(self) -> List[Dict[str, str]]:
+    def from_yaml(self, yaml_filepath) -> None:
+        with open(yaml_filepath) as f:
+            listed_dict: List[Dict[str, str]] = yaml.safe_load(f)
+        self.from_listed_dict(listed_dict)
+
+
+    def from_listed_dict(self, listed_dict: List[Dict[str, str]]) -> None:
+        if listed_dict is not None:
+            for d in listed_dict:
+                e_sentences = EvaluateSentence(
+                    input=d["input"],
+                    output=d["output"],
+                    human_answer=d["human_answer"],
+                    evaluation=d["evaluation"]
+                )
+                self.append(e_sentences)
+
+
+    def to_yaml(self, yaml_filepath: str) -> None:
+        listed_e = self.to_listed_dict()
+
+        if len(listed_e) == 0:
+            raise ValueError("評価すべき文章が登録されていません。")
+
+        with open(yaml_filepath, "w") as f:
+            yaml.dump(listed_e, f, allow_unicode=True)
+
+
+    def to_listed_dict(self) -> List[Dict[str, str]]:
         """
         以下のリストデータに変換
         [
@@ -75,20 +105,20 @@ class EvaluateSentences:
         return _list
 
 
-    def to_yaml(self, yaml_filepath) -> None:
-        import yaml
-        listed_e = self.to_list()
-
-        if len(listed_e) == 0:
-            raise ValueError("評価すべき文章が登録されていません。")
-
-        with open(yaml_filepath, "w") as f:
-            yaml.dump(listed_e, f, allow_unicode=True)
-
-
-    def __add__(self, other):
+    def __add__(self, other: EvaluateSentence):
         if isinstance(other, EvaluateSentence):
             self.append(other)
+        else:
+            raise RuntimeError("EvaluateSentenceクラスのみ加算ができます")
+
+
+    def __iter__(self):
+        max_cnt: int = len(self.evaluation_sentences) - 1
+
+        for i, e in enumerate(self.evaluation_sentences):
+            if i > max_cnt:
+                raise StopIteration()
+            yield e
 
 
 class AgentConfig:
