@@ -25,3 +25,4 @@ streamlit run <pythonファイルのパス>
 * ✅ [コンテキストつきの自然言語からAWS CLIのコマンドを実行させる検証](./repo/report_exec_command_context.md)
 * ✅ [コンテキストなしの質問をコンテキストを考慮するエージェントにしてみた](./repo/report_contextless_request_with_usercontext.md)
 * ✅ [対話方法を網羅的に調査](./repo/report_conversational_pickup.md)
+* ✅ [対話的エージェントの検証](./repo/report_conversational.md)
