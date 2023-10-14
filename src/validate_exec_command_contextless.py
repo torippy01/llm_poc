@@ -1,6 +1,7 @@
 import argparse
 import os
 import time
+from pathlib import Path
 
 import openai
 import streamlit as st
@@ -9,15 +10,10 @@ from langchain.agents import initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.schema import AIMessage, HumanMessage
-from langchain.tools import tool, ShellTool
-from llama_index import (
-    ServiceContext,
-    StorageContext,
-    LLMPredictor,
-    load_index_from_storage,
-)
+from langchain.tools import ShellTool, tool
+from llama_index import (LLMPredictor, ServiceContext, StorageContext,
+                         load_index_from_storage)
 from streamlit_chat import message
-from pathlib import Path
 
 
 def set_config():
@@ -27,17 +23,12 @@ def set_config():
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--llm",
-        type=str,
-        default="gpt-4",
-        help="推論用LLM名を指定します。"
-    )
+    parser.add_argument("--llm", type=str, default="gpt-4", help="推論用LLM名を指定します。")
     parser.add_argument(
         "--index-dir",
         type=str,
         default="test_index",
-        help="インデックスのJsonファイルのディレクトリ名を指定します。"
+        help="インデックスのJsonファイルのディレクトリ名を指定します。",
     )
     return parser.parse_args()
 

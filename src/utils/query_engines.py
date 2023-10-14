@@ -1,10 +1,7 @@
-from pathlib import Path 
-from llama_index import (
-    ServiceContext,
-    StorageContext,
-    LLMPredictor,
-    load_index_from_storage,
-)
+from pathlib import Path
+
+from llama_index import (LLMPredictor, ServiceContext, StorageContext,
+                         load_index_from_storage)
 
 
 def get_query_engine(index_dir, llm):

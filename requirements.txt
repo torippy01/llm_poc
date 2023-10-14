@@ -9,3 +9,4 @@ ruff
 beautifulsoup4
 argparse
 mdutils
+toml

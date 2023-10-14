@@ -22,7 +22,7 @@
 * AWS CLIのサブコマンドの文書（以下「文書」）をインデックス化する．
 * 文書はすべてで`13698`件存在する(恐ろしい)．
 * インデックス化するtoken数に応じて、次の項目に関してどんな変化が起きるのかを検証する．
-* ソースコードの収集は[こちらのコード](../src/collect_aws_command_ref.py)を使用
+* ソースコードの収集は[こちらのコード](../src/utils/collect_aws_command_ref.py)を使用
 * 検証コードの実行コマンド
   ```bash
   streamlit run src/validate_single_document.py -- --max-urls <インデックス化する文書数>

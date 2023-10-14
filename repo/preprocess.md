@@ -37,7 +37,7 @@ AWS CLIリファレンスのノイズを削除した場合における対話精�
 * 質問は「コンテキストつき」「コンテキストなし」の両方で実施
 
 ## 検証結果
-* [結果レポート](./results/result_preprocess.md)
+* [結果レポート](./results/preprocess.md)
 
 ## まとめと感想
 ### `command_predictor`及び`parameter_predictor_from_query`の回答精度が若干向上

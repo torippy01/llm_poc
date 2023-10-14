@@ -1,13 +1,10 @@
 import argparse
 import logging
 import os
-import openai
 
+import openai
 from dotenv import load_dotenv
-from llama_index import (
-    GPTVectorStoreIndex,
-    SimpleDirectoryReader,
-)
+from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
 
 
 def set_config():
@@ -53,6 +50,7 @@ def main():
     persist_dir = f"storage/{args.index_id}"
     index.storage_context.persist(persist_dir)
     logging.info("インデックスを%sに保存しました．", persist_dir)
+
 
 if __name__ == "__main__":
     main()

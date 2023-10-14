@@ -1,9 +1,9 @@
 import argparse
-import openai
 import os
 
+import openai
 from dotenv import load_dotenv
-from schema import EvaluateSentences, EvaluateSentence
+from schema import EvaluateSentence, EvaluateSentences
 
 
 def get_args():
@@ -12,9 +12,10 @@ def get_args():
         "--dataset-path",
         type=str,
         default="./eval_sentence/evaluation_human_eval.yaml",
-        help="推論用LLM名を指定します。"
+        help="推論用LLM名を指定します。",
     )
     return parser.parse_args()
+
 
 def set_config():
     load_dotenv()
@@ -34,12 +35,13 @@ def evaluate(sentences: EvaluateSentence) -> EvaluateSentence:
         評価文： {sentences.human_answer}
     """
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": content}
-        ]
-    ).choices[0]["message"]["content"].strip()
+    response = (
+        openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", messages=[{"role": "user", "content": content}]
+        )
+        .choices[0]["message"]["content"]
+        .strip()
+    )
     sentences.evaluation = response
     return sentences
 

@@ -1,33 +1,60 @@
-import yaml
 from dataclasses import dataclass
-from typing import List, Optional, Union, Dict, Sequence
-from langchain.schema import HumanMessage, AIMessage, AgentAction
+from typing import List, Optional, Sequence, Union, Dict
+
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import AgentAction, AIMessage, BaseMemory, HumanMessage
+from langchain.tools import BaseTool
+
+
+# エージェントを構成するパラメータをもつデータクラス
+@dataclass(frozen=True)
+class AgentExecutorConfig:
+    llm: ChatOpenAI
+    tools: List[BaseTool]
+    memory: BaseMemory
+    agent_type: str
+    pull: str
+    interactive: bool
+    eval_sentences: str
+
 
 @dataclass
+class ToolConf:
+    name: str
+    index_dir: str
+    llm: Optional[ChatOpenAI]
+    data_source: str
+
+
+@dataclass(frozen=True)
+class Config:
+    interactive: bool
+    agent_type: str
+    llm_name: str
+    user_index_dir: str
+    pull: str
+    tool_conf: Dict
+    eval_sentences: str
+    md_filepath: str
+    md_title: str
+
+
+@dataclass(frozen=True)
 class Experiment:
     md_filepath: str
     md_title: str
     tool_names: Union[List[str], str]
-    llm: str
+    llm_name: str
     user_index_dir: str
-    aws_index_dir: str
     agent_type: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class ConversationLog:
     input: str
     output: str
-    intermediate_steps: Union[
-        Sequence[AgentAction],
-        Sequence[str],
-        None
-    ]
-    chat_history: Union[
-        List[HumanMessage],
-        List[AIMessage],
-        None
-    ]
+    intermediate_steps: Union[Sequence[AgentAction], Sequence[str], None]
+    chat_history: Union[List[HumanMessage], List[AIMessage], None]
     elapsed_time: float
 
 
@@ -37,90 +64,3 @@ class EvaluateSentence:
     output: str
     human_answer: Optional[str]
     evaluation: Optional[str]
-
-
-class EvaluateSentences:
-    def __init__(self):
-        self.evaluation_sentences: List[EvaluateSentence] = []
-        self.iter_cnt: int = 0
-
-
-    def append(self, evaluation_sentence: EvaluateSentence) -> None:
-        self.evaluation_sentences.append(evaluation_sentence)
-
-
-    def from_yaml(self, yaml_filepath) -> None:
-        with open(yaml_filepath) as f:
-            listed_dict: List[Dict[str, str]] = yaml.safe_load(f)
-        self.from_listed_dict(listed_dict)
-
-
-    def from_listed_dict(self, listed_dict: List[Dict[str, str]]) -> None:
-        if listed_dict is not None:
-            for d in listed_dict:
-                e_sentences = EvaluateSentence(
-                    input=d["input"],
-                    output=d["output"],
-                    human_answer=d["human_answer"],
-                    evaluation=d["evaluation"]
-                )
-                self.append(e_sentences)
-
-
-    def to_yaml(self, yaml_filepath: str) -> None:
-        listed_e = self.to_listed_dict()
-
-        if len(listed_e) == 0:
-            raise ValueError("評価すべき文章が登録されていません。")
-
-        with open(yaml_filepath, "w") as f:
-            yaml.dump(listed_e, f, allow_unicode=True)
-
-
-    def to_listed_dict(self) -> List[Dict[str, str]]:
-        """
-        以下のリストデータに変換
-        [
-            {
-                "input": <人間の入力>,
-                "output": <エージェントの最終出力>,
-                "human_answer": <人間が用意した模範解答>,
-                "evaluation": <outputの評価値>
-            }, {...}
-        ]
-        """
-        if len(self.evaluation_sentences) == 0:
-            return []
-        _list = list()
-
-        for e in self.evaluation_sentences:
-            _list.append(
-                {
-                    "input": e.input,
-                    "output": e.output,
-                    "human_answer": e.human_answer,
-                    "evaluation": e.evaluation,
-                }
-            )
-        return _list
-
-
-    def __add__(self, other: EvaluateSentence):
-        if isinstance(other, EvaluateSentence):
-            self.append(other)
-        else:
-            raise RuntimeError("EvaluateSentenceクラスのみ加算ができます")
-
-
-    def __iter__(self):
-        max_cnt: int = len(self.evaluation_sentences) - 1
-
-        for i, e in enumerate(self.evaluation_sentences):
-            if i > max_cnt:
-                raise StopIteration()
-            yield e
-
-
-class AgentConfig:
-    def unpack(self):
-        pass

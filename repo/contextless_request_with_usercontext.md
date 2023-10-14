@@ -2,7 +2,7 @@
 ユーザーコンテキストを考慮するエージェントに対して、コンテキスト情報を必要としない質問を与えた場合の挙動を検証する．
 
 ## 検証環境
-[コンテキストつきの自然言語からAWS CLIのコマンドを実行させる検証](./repo/report_exec_command_context.md)(以下「前回の検証」)に同じ．
+[コンテキストつきの自然言語からAWS CLIのコマンドを実行させる検証](./repo/exec_command_context.md)(以下「前回の検証」)に同じ．
 
 ## 検証手法
 * 検証コードの実行コマンド
@@ -13,7 +13,7 @@
 * 前回の検証で得た回答と比較し、回答精度に影響が及んでいるかを確認
 
 ## 検証結果
-* [検証結果](./results/result_contextless_using_usercontext.md)
+* [検証結果](./results/contextless_using_usercontext.md)
 
 ## まとめと感想
 ### 全般

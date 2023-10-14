@@ -21,7 +21,7 @@
     * 文意が全く異なる
 
 ## 検証結果
-* [結果レポート](./results/evaluation/result_evaluation_rule.md)
+* [結果レポート](./results/evaluation/rule.md)
 
 ## まとめと感想
 * ルールを設定することである程度の評価品質を担保できることが分かった．

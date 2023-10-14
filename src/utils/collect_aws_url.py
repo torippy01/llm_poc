@@ -3,11 +3,15 @@ AWSのサブコマンドのリファレンスURLを全件取得するコード�
 実行時間は1時間30分 ～ 2時間程度です。
 """
 
-import requests
-from bs4 import BeautifulSoup
 import time
 
-ROOT_URL = "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html"
+import requests
+from bs4 import BeautifulSoup
+
+ROOT_URL = (
+    "https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html"
+)
+
 
 def get_html(url):
     response = requests.get(url)
@@ -16,7 +20,7 @@ def get_html(url):
 
 
 def get_blob(url):
-    return url[:url.rfind("/") + 1]
+    return url[: url.rfind("/") + 1]
 
 
 def get_urls(ref_url):

@@ -16,17 +16,14 @@ python src/create_aws_index.py \
 
 import argparse
 import os
-import openai
 from glob import glob
 from typing import List
 
+import openai
 from dotenv import load_dotenv
+from llama_index import (GPTVectorStoreIndex, SimpleDirectoryReader,
+                         SimpleWebPageReader)
 
-from llama_index import (
-    GPTVectorStoreIndex,
-    SimpleWebPageReader,
-    SimpleDirectoryReader,
-)
 
 def set_config():
     load_dotenv()
@@ -73,13 +70,14 @@ def get_args():
 
     return parser.parse_args()
 
-def get_urls(path: str, start: int =0, end: int =100) -> List[str]:
+
+def get_urls(path: str, start: int = 0, end: int = 100) -> List[str]:
     with open(path, "r") as f:
         urls = [s.rstrip() for s in f.readlines()]
     return urls[start:end]
 
 
-def get_document(path: str, start: int =0, end: int =100):
+def get_document(path: str, start: int = 0, end: int = 100):
     return glob(f"{path}/*")[start:end]
 
 
@@ -92,7 +90,6 @@ class Document:
         self.validate: str = self.get_validate()
         self.document_resource: List[str] = self.get_document_resource()
 
-
     def get_validate(self) -> str:
         # documentを優先
         if self.docs_path:
@@ -102,7 +99,6 @@ class Document:
         else:
             raise ValueError("ドキュメントリソースのパスが指定されていません")
 
-
     def get_document_resource(self) -> List[str]:
         if self.validate == "url":
             return get_urls(self.urls_path, self.start, self.end)
@@ -110,7 +106,6 @@ class Document:
             return get_document(self.docs_path, self.start, self.end)
         else:
             raise RuntimeError("Unexpected Error!!!")
-
 
     def load_data(self):
         if self.validate == "url":
@@ -125,12 +120,7 @@ def main():
     set_config()
     args = get_args()
 
-    docs = Document(
-        args.urls_path,
-        args.docs_path,
-        args.start,
-        args.end
-    ).load_data()
+    docs = Document(args.urls_path, args.docs_path, args.start, args.end).load_data()
 
     print("documentの読み込み完了")
     index = GPTVectorStoreIndex.from_documents(docs)

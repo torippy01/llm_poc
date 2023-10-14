@@ -1,6 +1,7 @@
 import argparse
 import os
 import time
+from pathlib import Path
 
 import openai
 import streamlit as st
@@ -9,15 +10,10 @@ from langchain.agents import initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.schema import AIMessage, HumanMessage
-from langchain.tools import tool, ShellTool
-from llama_index import (
-    ServiceContext,
-    StorageContext,
-    LLMPredictor,
-    load_index_from_storage,
-)
+from langchain.tools import ShellTool, tool
+from llama_index import (LLMPredictor, ServiceContext, StorageContext,
+                         load_index_from_storage)
 from streamlit_chat import message
-from pathlib import Path
 
 
 def set_config():
@@ -27,23 +23,18 @@ def set_config():
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--llm",
-        type=str,
-        default="gpt-4",
-        help="推論用LLM名を指定します。"
-    )
+    parser.add_argument("--llm", type=str, default="gpt-4", help="推論用LLM名を指定します。")
     parser.add_argument(
         "--aws-index-dir",
         type=str,
         default="test_index",
-        help="AWSインデックスのJsonファイルのディレクトリ名を指定します。"
+        help="AWSインデックスのJsonファイルのディレクトリ名を指定します。",
     )
     parser.add_argument(
         "--user-index-dir",
         type=str,
         default="user_context_index",
-        help="ユーザーインデックスのJsonファイルのディレクトリ名を指定します。"
+        help="ユーザーインデックスのJsonファイルのディレクトリ名を指定します。",
     )
     return parser.parse_args()
 
@@ -65,6 +56,7 @@ llm = ChatOpenAI(temperature=0, model_name="gpt-4")
 
 aws_query_engine = get_query_engine(args.aws_index_dir, llm)
 user_query_engine = get_query_engine(args.user_index_dir, llm)
+
 
 # プロンプトから該当するAWSコマンドを推定するツール
 @tool
@@ -105,7 +97,7 @@ def main():
         command_predictor,
         parameter_predictor_from_query,
         user_context_predictor,
-        shell_tool
+        shell_tool,
     ]
 
     # 対話のmemoryをセッションステートから取得

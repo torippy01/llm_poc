@@ -1,6 +1,6 @@
 import os
-import requests
 
+import requests
 from bs4 import BeautifulSoup
 
 AWS_URL_PATH = "./aws_context/urls.txt"
