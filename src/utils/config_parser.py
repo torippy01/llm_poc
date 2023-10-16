@@ -41,7 +41,7 @@ def get_conf():
             md_filepath=toml_data.get("md_filepath", "./repo/results/test.md"),
             md_title=toml_data.get("md_title", "TEST"),
         )
-        print(conf)
+
         return conf
 
     else:

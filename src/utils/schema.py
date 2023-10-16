@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional, Sequence, Union, Dict
+from typing import Dict, List, Optional, Sequence, Union
 
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import AgentAction, AIMessage, BaseMemory, HumanMessage

@@ -11,8 +11,12 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.schema import AIMessage, HumanMessage
 from langchain.tools import ShellTool, tool
-from llama_index import (LLMPredictor, ServiceContext, StorageContext,
-                         load_index_from_storage)
+from llama_index import (
+    LLMPredictor,
+    ServiceContext,
+    StorageContext,
+    load_index_from_storage,
+)
 from streamlit_chat import message
 
 

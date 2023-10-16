@@ -1,0 +1,13 @@
+llm = "gpt-4"
+user_index_dir = "user_context_index"
+agent_type = "zero-shot-react-description"
+interactive = false
+eval_sentence = "eval_sentence/conflict.yaml"
+md_filepath = "./repo/results/conflict/single_tool_conflict_chat.md"
+md_title = "single tool conflict chat"
+
+[[tools_conf]]
+name = "user_context_predictor"
+index_dir = "conflict_chat"
+data_source = "chat"
+llm = "gpt-4"

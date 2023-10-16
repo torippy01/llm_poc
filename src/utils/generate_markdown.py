@@ -1,6 +1,7 @@
 from typing import List
 
 from langchain.schema import AIMessage, HumanMessage
+from llama_index.response.schema import Response
 from mdutils.mdutils import MdUtils
 
 from utils.schema import ConversationLog, Experiment
@@ -29,6 +30,9 @@ def _gen_md(mdFile: MdUtils, conversation_log: ConversationLog) -> None:
     elif conversation_log.intermediate_steps:
         for step in conversation_log.intermediate_steps:
             (agent_action, answer) = step
+
+            if isinstance(answer, Response):
+                answer = answer.response
 
             tool = agent_action.tool
             tool_input = agent_action.tool_input

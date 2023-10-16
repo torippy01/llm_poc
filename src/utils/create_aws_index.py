@@ -21,8 +21,7 @@ from typing import List
 
 import openai
 from dotenv import load_dotenv
-from llama_index import (GPTVectorStoreIndex, SimpleDirectoryReader,
-                         SimpleWebPageReader)
+from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader, SimpleWebPageReader
 
 
 def set_config():

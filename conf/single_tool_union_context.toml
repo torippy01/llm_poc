@@ -1,0 +1,13 @@
+llm = "gpt-4"
+user_index_dir = "user_context_index"
+agent_type = "zero-shot-react-description"
+interactive = false
+eval_sentence = "eval_sentence/conflict.yaml"
+md_filepath = "./repo/results/conflict/single_tool_union_context.md"
+md_title = "two tools two contexts"
+
+[[tools_conf]]
+name = "user_context_predictor"
+index_dir = "union_doc_chat"
+data_source = "documents"
+llm = "gpt-4"

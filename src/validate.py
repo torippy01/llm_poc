@@ -22,7 +22,7 @@ def main(conf):
     )
 
     tools = get_tools(conf.tool_conf)
-    print(tools)
+
     llm = get_llm(conf.llm_name)
 
     agent_executor_conf = AgentExecutorConfig(
@@ -41,7 +41,7 @@ def main(conf):
     experiment = Experiment(
         md_filepath=conf.md_filepath,
         md_title=conf.md_title,
-        tool_names=", ".join([tool_name for tool_name in conf.tool_names]),
+        tool_names=", ".join([t["name"] for t in conf.tool_conf]),
         llm_name=conf.llm_name,
         user_index_dir=conf.user_index_dir,
         agent_type=conf.agent_type,

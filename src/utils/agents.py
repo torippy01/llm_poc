@@ -4,8 +4,9 @@ import yaml
 from langchain import hub
 from langchain.agents import AgentExecutor, initialize_agent
 from langchain.agents.format_scratchpad import format_log_to_str
-from langchain.agents.output_parsers.react_single_input import \
-    ReActSingleInputOutputParser
+from langchain.agents.output_parsers.react_single_input import (
+    ReActSingleInputOutputParser,
+)
 from langchain.tools.render import render_text_description
 
 from utils.evaluation_sentences import EvaluateSentences

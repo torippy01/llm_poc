@@ -1,19 +1,21 @@
 import asyncio
 import subprocess
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Dict
+from typing import Callable, Dict, List, Optional
 
 import openai
 from langchain.agents import load_tools
-from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
-                                         CallbackManagerForToolRun)
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForToolRun,
+    CallbackManagerForToolRun,
+)
 from langchain.tools import ShellTool
 from langchain.tools.base import BaseTool
-
 from llama_index.query_engine.retriever_query_engine import RetrieverQueryEngine
 
 from utils.query_engines import get_query_engine
 from utils.utility import get_llm
+
 
 def get_aws_cli_version():
     aws_cli_version = (
@@ -82,11 +84,10 @@ class ParameterPredictor(BaseTool):
 
 
 def user_context_predictor_wrapper(
-        tool_name: str,
-        query_engine: RetrieverQueryEngine,
-        data_source: str,
+    tool_name: str,
+    query_engine: RetrieverQueryEngine,
+    data_source: str,
 ):
-
     class UserContextPredictor(BaseTool):
         name = tool_name
         description: str = f"""
@@ -108,6 +109,7 @@ def user_context_predictor_wrapper(
             return await asyncio.get_event_loop().run_in_executor(
                 None, query_engine.query, query
             )
+
     tool_instance = UserContextPredictor()
     return tool_instance
 

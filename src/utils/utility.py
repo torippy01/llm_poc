@@ -1,5 +1,6 @@
 import time
 from typing import Any, Callable
+
 from langchain.chat_models import ChatOpenAI
 
 
