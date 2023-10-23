@@ -14,9 +14,36 @@
   OPENAI_API_KEY="<openaiのAPIキー>"
   ```
 
+## ユーザーコンテキストの作成
+1. 任意のディレクトリにドキュメントを置く
+2. インデックスファイルを作成
+    ```bash
+    python src/index/create_user_index.py \
+      --index-id <index ID> \
+      --context-dir <ドキュメントのディレクトリ名>
+    ```
+    - インデックスファイルの本体は`storage/<index ID>`に配置
+
+## 問題集の作成
+1. 任意のディレクトリにyamlファイルを作成
+2. yamlファイルに下記を記述
+    ```yaml
+    - evaluation: null
+      human_answer: null
+      input: <AIへの質問>
+      output: null
+    ```
+    - `evaluation`: 評価値
+    - `human_answer`: 人間による評価文
+    - `input`: AIへの質問
+    - `output`: AIの回答
+
+## 設定ファイルの作成
+- [リンク参照](./how_to_config.md)
+
 ## 実行
 ```bash
-streamlit run <pythonファイルのパス>
+python src/validate.py --conf-toml conf/test.toml
 ```
 
 ## 検証レポート
