@@ -1,0 +1,44 @@
+- input: 本番運用インスタンスの過去１時間のCPU使用率を教えてください。
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: 本番運用インスタンスにSSH接続し、`ls`コマンドを実行してください。
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: EC2の料金をプロジェクト毎に集計してください
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: AI秘書プロジェクトの月額いくらかかっている？
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: ステータスチェックがエラーになってるインスタンスがあれば教えて
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: 三浦さんのユーザーアカウントって発行されてる？
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: 来月のAWS料金の予測額を教えて
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: CloudWatchでここ一カ月でalertが出てたアラームってある？
+  human_answer: null
+  output: null
+  evaluation: null
+
+- input: 要領が全然使われてないEBSをリストアップして？
+  human_answer: null
+  output: null
+  evaluation: null

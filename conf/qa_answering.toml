@@ -1,7 +1,7 @@
 llm = "gpt-4"
 user_index_dir = "user_context_index"
 agent_type = "zero-shot-react-description"
-interactive = true
+interactive = false
 eval_sentence = "eval_sentence/test_ai_answer.yaml"
 md_filepath = "./repo/results/test.md"
 md_title = "TEST"
@@ -22,4 +22,4 @@ name = "human"
 name = "user_context_predictor"
 index_dir = "user_context_index"
 data_source = "document"
-llm = "gpt-4"
+llm = "gpt-3.5-turbo"
