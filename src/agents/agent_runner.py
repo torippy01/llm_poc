@@ -3,7 +3,7 @@ from typing import Optional
 import yaml
 from langchain.agents import AgentExecutor
 
-from utils.evaluation_sentences import EvaluateSentences
+from evaluation.evaluation_sentences import EvaluateSentences
 from utils.schema import EvaluateSentence
 from utils.utility import time_measurement
 
