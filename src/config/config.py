@@ -10,7 +10,7 @@ from config.utils import get_cl_args_for_conf_toml
 from tools.aws import CommandPredictorTool, ParameterPredictorTool
 from tools.ht import create_HumanTool
 from tools.shell import ShellAndSummarizeTool
-from tools.uc import create_UserContextPredictorTool
+from tools.uc import create_user_context_predictor_tool
 from utils.utility import sep_md, Self
 
 
@@ -46,7 +46,7 @@ class Config:
                 tools.append(create_HumanTool())
 
             else:
-                tools.append(create_UserContextPredictorTool(tool_conf))
+                tools.append(create_user_context_predictor_tool(tool_conf))
 
         if len(tools) == 0:
             raise RuntimeError("no tools are specified.")
@@ -58,7 +58,7 @@ class Config:
         return ", ".join([t["name"] for t in self.tools_conf])
 
 
-    def generate_md_file(self) -> None:
+    def generate_md_file(self) -> MdUtils:
         md_file = MdUtils(file_name=self.md_filepath, title=self.md_title)
 
         md_file.new_line()
@@ -79,7 +79,7 @@ class Config:
 
 
     @classmethod
-    def fetch_config(self) -> Self:
+    def fetch_config(cls) -> Self:
         args = get_cl_args_for_conf_toml()
 
         if args.conf_toml:

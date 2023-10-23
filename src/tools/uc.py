@@ -34,7 +34,7 @@ def get_query_engine(
 
 
 
-def create_UserContextPredictorTool(
+def create_user_context_predictor_tool(
         tool_conf: Dict[str, Any]
     ) -> BaseTool:
     llm = create_llm(tool_conf["llm"])
