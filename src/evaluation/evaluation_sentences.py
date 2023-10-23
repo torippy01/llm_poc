@@ -1,44 +1,84 @@
-from typing import Dict, List
+from dataclasses import dataclass
+from typing import Dict, List, Optional
 
 import yaml
 
-from utils.schema import EvaluateSentence
+from utils.utility import get_gpt_response, Self
 
 
-class EvaluateSentences:
-    def __init__(self):
-        self.evaluation_sentences: List[EvaluateSentence] = []
-        self.iter_cnt: int = 0
 
-    def append(self, evaluation_sentence: EvaluateSentence) -> None:
-        self.evaluation_sentences.append(evaluation_sentence)
+@dataclass
+class EvaluateSentence:
 
-    def from_yaml(self, yaml_filepath) -> None:
+    input: str
+    output: str
+    human_answer: Optional[str]
+    evaluation: Optional[str]
+
+
+    def evaluate(self) -> None:
+        content = f"""
+            回答文は、質問文に対する回答が書かれています。
+            評価文に基づいて、回答文の評価を行いなさい．
+            評価は、１から３の３段階評価とします。
+            評価のフォーマットは、`評価：評価数`とします。
+            また、なぜその評価を行ったかを説明しなさい。
+
+            質問文： {self.input}
+            回答文： {self.output}
+            評価文： {self.human_answer}
+        """
+
+        self.evaluation = get_gpt_response(content)
+        return
+
+
+    def to_dict(self) -> Dict[str, Optional[str]]:
+        e_dict = {
+            "input": self.input,
+            "output": self.output,
+            "human_answer": self.human_answer,
+            "evaluation": self.evaluation,
+        }
+        return e_dict
+
+
+    @classmethod
+    def from_dict(
+        self,
+        e_dict: Dict[str, Optional[str]]
+    ) -> Self:
+        e_sentences = EvaluateSentence(
+            input=e_dict["input"],
+            output=e_dict["output"],
+            human_answer=e_dict["human_answer"],
+            evaluation=e_dict["evaluation"],
+        )
+        return e_sentences
+
+
+    @classmethod
+    def from_yaml_to_list(
+        self,
+        yaml_filepath: Optional[str]
+    ) -> List[Self]:
+        if yaml_filepath is None:
+            raise RuntimeError("no file is specified.")
         with open(yaml_filepath) as f:
-            listed_dict: List[Dict[str, str]] = yaml.safe_load(f)
-        self.from_listed_dict(listed_dict)
+            listed_dict = yaml.safe_load(f)
 
-    def from_listed_dict(self, listed_dict: List[Dict[str, str]]) -> None:
         if listed_dict is not None:
-            for d in listed_dict:
-                e_sentences = EvaluateSentence(
-                    input=d["input"],
-                    output=d["output"],
-                    human_answer=d["human_answer"],
-                    evaluation=d["evaluation"],
-                )
-                self.append(e_sentences)
+            return [self.from_dict(e_dict) for e_dict in listed_dict]
+        else:
+            raise RuntimeError("no sentences to evaluate in file")
 
-    def to_yaml(self, yaml_filepath: str) -> None:
-        listed_e = self.to_listed_dict()
 
-        if len(listed_e) == 0:
-            raise ValueError("評価すべき文章が登録されていません。")
-
-        with open(yaml_filepath, "w") as f:
-            yaml.dump(listed_e, f, allow_unicode=True)
-
-    def to_listed_dict(self) -> List[Dict[str, str]]:
+    @classmethod
+    def from_list_to_yaml(
+        self,
+        e_sentences_list: List[Self],
+        yaml_filepath: str
+    ) -> None:
         """
         以下のリストデータに変換
         [
@@ -50,31 +90,14 @@ class EvaluateSentences:
             }, {...}
         ]
         """
-        if len(self.evaluation_sentences) == 0:
-            return []
-        _list = list()
 
-        for e in self.evaluation_sentences:
-            _list.append(
-                {
-                    "input": e.input,
-                    "output": e.output,
-                    "human_answer": e.human_answer,
-                    "evaluation": e.evaluation,
-                }
-            )
-        return _list
+        dict_list = list()
+        for e_sentences in e_sentences_list:
+            dict_list.append(e_sentences.to_dict())
 
-    def __add__(self, other: EvaluateSentence):
-        if isinstance(other, EvaluateSentence):
-            self.append(other)
-        else:
-            raise RuntimeError("EvaluateSentenceクラスのみ加算ができます")
+        if len(dict_list) == 0:
+            raise ValueError("評価すべき文章が登録されていません。")
 
-    def __iter__(self):
-        max_cnt: int = len(self.evaluation_sentences) - 1
-
-        for i, e in enumerate(self.evaluation_sentences):
-            if i > max_cnt:
-                raise StopIteration()
-            yield e
+        with open(yaml_filepath, "w") as f:
+            yaml.dump(dict_list, f, allow_unicode=True)
+        return

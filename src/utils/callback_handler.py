@@ -1,17 +1,33 @@
-import tiktoken
-
 from time import time
-from uuid import UUID
-from langchain.callbacks.base import BaseCallbackHandler
 from typing import Dict, Any, Optional, List
-from utils.schema import Experiment, ConversationLog
-from utils.generate_markdown import gen_md
+
+from langchain.callbacks.base import BaseCallbackHandler
+
+from mdutils.mdutils import MdUtils
+
+from tiktoken import encoding_for_model
+
+from uuid import UUID
+
+from conv_log.conv_log import ConversationLog
+
+
+
 
 class CustomCallbackHandler(BaseCallbackHandler):
-    experiment: Experiment
-    conversation_logs: List[ConversationLog]
+    md: MdUtils
+    conversation_logs: List[ConversationLog] = list()
     user_input: str
     chain_start_time: float
+
+
+    def __init__(
+        self,
+        md: MdUtils
+    ):
+        super().__init__()
+        self.md = md
+        return
 
 
     def on_chain_start(
@@ -24,7 +40,7 @@ class CustomCallbackHandler(BaseCallbackHandler):
         tags: Optional[List[str]] = None,
         metadata: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
-    ) -> Any:
+    ) -> None:
         """Run when chain starts running."""
         user_input = inputs.get("input")
         if user_input is None:
@@ -34,14 +50,16 @@ class CustomCallbackHandler(BaseCallbackHandler):
 
         self.user_input = user_input
         self.chain_start_time = time()
+        return
 
 
-    def on_text(self, text: str, **kwargs: Any) -> Any:
+    def on_text(self, text: str, **kwargs: Any) -> None:
         """Run on arbitrary text."""
-        encoding = tiktoken.encoding_for_model("gpt-4")
+        encoding = encoding_for_model("gpt-4")
         token_count = len(encoding.encode(text))
         if token_count > 5000:
             print(f"token count is {token_count}")
+        return
 
 
     def on_chain_end(
@@ -51,7 +69,7 @@ class CustomCallbackHandler(BaseCallbackHandler):
         run_id: UUID,
         parent_run_id: Optional[UUID] = None,
         **kwargs: Any,
-    ) -> Any:
+    ) -> None:
 
         output = outputs.get("output", None)
         if output is None:
@@ -67,4 +85,5 @@ class CustomCallbackHandler(BaseCallbackHandler):
             chat_history=outputs.get("chat_history", None),
             elapsed_time=elapsed_time,
         )
-        gen_md([conversation_log], self.experiment)
+        conversation_log.dump(self.md)
+        return

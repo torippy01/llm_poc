@@ -1,40 +1,13 @@
-import argparse
 import logging
-import os
 
-import openai
-from dotenv import load_dotenv
 from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
 
-
-def set_config():
-    load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+from index.utils import get_CL_args_for_context_index
 
 
-def get_args():
-    parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "--index-id",
-        type=str,
-        default="user_context_index",
-        help="インデックスIDを指定します。",
-    )
-
-    parser.add_argument(
-        "--context-dir",
-        type=str,
-        default="./user_context",
-        help="コンテキストのファイルが保存されるディレクトリを指定します。",
-    )
-
-    return parser.parse_args()
-
-
-def main():
-    set_config()
-    args = get_args()
+def test() -> None:
+    args = get_CL_args_for_context_index()
     logging.basicConfig(level=logging.INFO)
 
     logging.info("%sから を使ってドキュメントを取得しています．", args.context_dir)
@@ -50,7 +23,5 @@ def main():
     persist_dir = f"storage/{args.index_id}"
     index.storage_context.persist(persist_dir)
     logging.info("インデックスを%sに保存しました．", persist_dir)
+    return
 
-
-if __name__ == "__main__":
-    main()
