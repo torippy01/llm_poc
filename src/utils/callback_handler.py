@@ -1,6 +1,6 @@
 import tiktoken
 
-from time import sleep, time
+from time import time
 from uuid import UUID
 from langchain.callbacks.base import BaseCallbackHandler
 from typing import Dict, Any, Optional, List
@@ -68,6 +68,3 @@ class CustomCallbackHandler(BaseCallbackHandler):
             elapsed_time=elapsed_time,
         )
         gen_md([conversation_log], self.experiment)
-
-
-        """Run when chain ends running."""

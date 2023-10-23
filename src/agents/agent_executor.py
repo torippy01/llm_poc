@@ -14,7 +14,8 @@ from utils.schema import AgentExecutorConfig
 class CustomAgentExecutor:
     def __init__(self, conf: AgentExecutorConfig) -> None:
         self.conf = conf
-
+        # 現コードではhubの内容がpromptを前提としている
+        # TODO pullした内容を判別してAgentに組み込む修正
         if conf.pull:
             prompt = hub.pull(conf.pull)
             prompt = prompt.partial(
@@ -46,6 +47,7 @@ class CustomAgentExecutor:
             )
 
         else:
+
             return_intermediate_steps = (
                 False
                 if conf.agent_type in ["conversational-react-description"]

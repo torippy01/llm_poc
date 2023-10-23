@@ -44,7 +44,10 @@ class AgentRunner:
         e_sentences = EvaluateSentences()
 
         while True:
-            print("AIへのメッセージを書いてください。\n" "終了する場合は'exit'と入力してください。")
+            print(
+                "AIへのメッセージを書いてください。\n"
+                "終了する場合は'exit'と入力してください。"
+            )
 
             user_message = input()
             if user_message == "exit":
