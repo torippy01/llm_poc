@@ -9,7 +9,7 @@ from langchain.callbacks.manager import (
 )
 
 class ParameterPredictor(BaseTool):
-    name = "command_predictor"
+    name = "parameter_predictor"
     description: str = f"""
         バージョン{get_aws_cli_version()}のAWS CLIコマンドの引数を取得するツール
     """
