@@ -93,7 +93,10 @@ class Config:
                 user_index_dir=toml_data.get("user_index_dir", "user_context_index"),
                 pull=toml_data.get("pull", None),
                 tools_conf=toml_data.get("tools_conf", {}),
-                eval_sentences_path=toml_data.get("eval_sentence", "eval_sentence/test_ai_answer.yaml"),
+                eval_sentences_path=toml_data.get(
+                    "eval_sentence",
+                    "eval_sentence/test_ai_answer.yaml"
+                ),
                 md_filepath=toml_data.get("md_filepath", "./repo/results/test.md"),
                 md_title=toml_data.get("md_title", "TEST"),
             )

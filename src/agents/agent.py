@@ -77,7 +77,10 @@ class AgentRunner:
         else:
             e_sentences_list = self.run_agent_with_Q_and_A()
         if self.eval_sentences_path:
-            EvaluateSentence.from_list_to_yaml(e_sentences_list, self.eval_sentences_path)
+            EvaluateSentence.from_list_to_yaml(
+                e_sentences_list,
+                self.eval_sentences_path
+            )
 
         self.md_file.create_md_file()
         return
