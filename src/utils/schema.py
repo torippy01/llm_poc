@@ -7,16 +7,6 @@ from langchain.tools import BaseTool
 
 
 # エージェントを構成するパラメータをもつデータクラス
-@dataclass(frozen=True)
-class AgentExecutorConfig:
-    llm: ChatOpenAI
-    tools: List[BaseTool]
-    memory: BaseMemory
-    agent_type: str
-    pull: str
-    interactive: bool
-    eval_sentences: str
-
 
 @dataclass
 class ToolConf:
@@ -48,6 +38,17 @@ class Experiment:
     user_index_dir: str
     agent_type: str
 
+
+@dataclass(frozen=True)
+class AgentExecutorConfig:
+    llm: ChatOpenAI
+    tools: List[BaseTool]
+    memory: BaseMemory
+    agent_type: str
+    pull: str
+    interactive: bool
+    eval_sentences: str
+    experiment: Experiment
 
 @dataclass(frozen=True)
 class ConversationLog:

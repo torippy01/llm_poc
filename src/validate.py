@@ -1,16 +1,9 @@
-"""
-python src/validate.py \
-    --agent-type chat-zero-shot-react-description \
-    --interactive
-"""
-
 from langchain.memory import ConversationBufferMemory
 
-from utils.agents import CustomAgentExecutor
+from agents.agent_executor import CustomAgentExecutor
 from utils.config_parser import get_conf
-from utils.generate_markdown import gen_md
 from utils.schema import AgentExecutorConfig, Experiment
-from utils.tools import get_tools
+from tools.get_tools import get_tools
 from utils.utility import get_llm
 
 
@@ -22,8 +15,18 @@ def main(conf):
     )
 
     tools = get_tools(conf.tool_conf)
+    tool_names = ", ".join([t["name"] for t in conf.tool_conf])
 
     llm = get_llm(conf.llm_name)
+
+    experiment = Experiment(
+        md_filepath=conf.md_filepath,
+        md_title=conf.md_title,
+        tool_names=tool_names,
+        llm_name=conf.llm_name,
+        user_index_dir=conf.user_index_dir,
+        agent_type=conf.agent_type
+    )
 
     agent_executor_conf = AgentExecutorConfig(
         llm=llm,
@@ -33,24 +36,11 @@ def main(conf):
         pull=conf.pull,
         interactive=conf.interactive,
         eval_sentences=conf.eval_sentences,
+        experiment=experiment
     )
 
     agent_executor = CustomAgentExecutor(agent_executor_conf)
-    conversation_log, e_sentences = agent_executor.run()
-
-    experiment = Experiment(
-        md_filepath=conf.md_filepath,
-        md_title=conf.md_title,
-        tool_names=", ".join([t["name"] for t in conf.tool_conf]),
-        llm_name=conf.llm_name,
-        user_index_dir=conf.user_index_dir,
-        agent_type=conf.agent_type,
-    )
-
-    gen_md(
-        conversation_logs=conversation_log,
-        experiment=experiment,
-    )
+    e_sentences = agent_executor.run()
 
     e_sentences.to_yaml(yaml_filepath=conf.eval_sentences)
 

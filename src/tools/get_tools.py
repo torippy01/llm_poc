@@ -5,7 +5,7 @@ from langchain.agents.agent import ExceptionTool
 from langchain.tools import ShellTool
 from tools.schema import CustomTool
 
-from utils.query_engines import get_query_engine
+from index.query_engines import get_query_engine
 from utils.utility import get_llm
 
 
