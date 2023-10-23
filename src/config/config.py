@@ -8,9 +8,9 @@ from langchain.tools import BaseTool
 
 from config.utils import get_cl_args_for_conf_toml
 from tools.aws import CommandPredictorTool, ParameterPredictorTool
-from tools.ht import CreateHumanTool
+from tools.ht import create_HumanTool
 from tools.shell import ShellAndSummarizeTool
-from tools.uc import CreateUserContextPredictorTool
+from tools.uc import create_UserContextPredictorTool
 from utils.utility import sep_md, Self
 
 
@@ -43,10 +43,10 @@ class Config:
                 tools.append(ShellAndSummarizeTool())
 
             elif tool_conf["name"] == "human":
-                tools.append(CreateHumanTool())
+                tools.append(create_HumanTool())
 
             else:
-                tools.append(CreateUserContextPredictorTool(tool_conf))
+                tools.append(create_UserContextPredictorTool(tool_conf))
 
         if len(tools) == 0:
             raise RuntimeError("no tools are specified.")

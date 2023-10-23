@@ -3,7 +3,7 @@ from langchain.tools import BaseTool
 
 
 
-def CreateHumanTool() -> BaseTool:
+def create_HumanTool() -> BaseTool:
 
     def get_input() -> str:
         print("Insert your text.")
