@@ -5,7 +5,7 @@ import argparse
 def get_cl_args_for_conf_toml() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--conf_toml",
+        "--conf-toml",
         "-tm",
         type=str,
         help="Please specify config TOML file."
