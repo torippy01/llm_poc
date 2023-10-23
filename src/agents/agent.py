@@ -15,7 +15,8 @@ from utils.utility import create_CBmemory, create_llm, time_measurement
 
 class AgentRunner:
 
-
+    # hub.pull()の結果がpromptを前提としているが、実際はその限りでない
+    # TODO: hub.pullの結果を判別してagentに適用するよう修正
     def __init__(self, conf: Config):
         llm = create_llm(conf.llm_name)
         memory = create_CBmemory()
