@@ -2,12 +2,12 @@ import logging
 
 from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
 
-from index.utils import get_CL_args_for_context_index
+from index.utils import get_cl_args_for_context_index
 
 
 
 def test() -> None:
-    args = get_CL_args_for_context_index()
+    args = get_cl_args_for_context_index()
     logging.basicConfig(level=logging.INFO)
 
     logging.info("%sから を使ってドキュメントを取得しています．", args.context_dir)

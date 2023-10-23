@@ -27,7 +27,6 @@ class CustomCallbackHandler(BaseCallbackHandler):
     ):
         super().__init__()
         self.md = md
-        return
 
 
     def on_chain_start(

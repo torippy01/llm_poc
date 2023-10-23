@@ -2,7 +2,7 @@ import argparse
 
 
 
-def get_CL_args_for_context_index() -> argparse.Namespace:
+def get_cl_args_for_context_index() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
     parser.add_argument(

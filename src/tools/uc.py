@@ -34,54 +34,36 @@ def get_query_engine(
 
 
 
-class UserContextPredictorTool(BaseTool):
-
-    name: str
-    description: str
-
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        query_engine: BaseQueryEngine
-    ):
-        super().__init__()
-        self.name = name
-        self.description = description
-        self.query_engine = query_engine
-        return
-
-
-    def _run(
-        self,
-        query: str,
-        run_manager: Optional[CallbackManagerForToolRun] = None,
-    ) -> str:
-        return self.query_engine.query(query)
-
-
-    async def _arun(
-        self,
-        query: str,
-        run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
-    ) -> str:
-        return await asyncio.get_event_loop().run_in_executor(
-            None, self.query_engine.query, query
-        )
-
-
-
 def CreateUserContextPredictorTool(
         tool_conf: Dict[str, Any]
-    ) -> UserContextPredictorTool:
+    ) -> BaseTool:
     llm = create_llm(tool_conf["llm"])
     query_engine = get_query_engine(tool_conf["index_dir"], llm)
-    description = f"""
-    ユーザーしか知らない知識を{tool_conf["data_source"]}から取得するツール
-    """
-    return UserContextPredictorTool(
-        tool_conf["name"],
-        description,
-        query_engine
-    )
+
+
+    class UserContextPredictorTool(BaseTool):
+
+        name: str = tool_conf["name"]
+        description: str = f"""
+        ユーザーしか知らない知識を{tool_conf["data_source"]}から取得するツール
+        """
+
+
+        def _run(
+            self,
+            query: str,
+            run_manager: Optional[CallbackManagerForToolRun] = None,
+        ) -> str:
+            return query_engine.query(query)
+
+
+        async def _arun(
+            self,
+            query: str,
+            run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
+        ) -> str:
+            return await asyncio.get_event_loop().run_in_executor(
+                None, query_engine.query, query
+            )
+
+    return UserContextPredictorTool()

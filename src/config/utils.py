@@ -2,7 +2,7 @@ import argparse
 
 
 
-def get_CL_args_for_conf_toml() -> argparse.Namespace:
+def get_cl_args_for_conf_toml() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--conf_toml",

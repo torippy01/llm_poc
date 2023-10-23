@@ -6,7 +6,7 @@ import toml
 
 from langchain.tools import BaseTool
 
-from config.utils import get_CL_args_for_conf_toml
+from config.utils import get_cl_args_for_conf_toml
 from tools.aws import CommandPredictorTool, ParameterPredictorTool
 from tools.ht import CreateHumanTool
 from tools.shell import ShellAndSummarizeTool
@@ -80,7 +80,7 @@ class Config:
 
     @classmethod
     def fetch_config(self) -> Self:
-        args = get_CL_args_for_conf_toml()
+        args = get_cl_args_for_conf_toml()
 
         if args.conf_toml:
             with open(args.conf_toml, "r") as f:

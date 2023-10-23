@@ -69,7 +69,6 @@ class AgentRunner:
             self.eval_sentences_path = conf.eval_sentences_path
 
         self.md_file = conf.generate_md_file()
-        return
 
 
     def run(self) -> None:
