@@ -3,7 +3,7 @@ from typing import List
 from langchain import hub
 from langchain.agents import AgentExecutor, initialize_agent
 from langchain.agents.format_scratchpad import format_log_to_str
-from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
+from langchain.agents.output_parsers import ReActSingleInputOutputParser
 from langchain.tools.render import render_text_description
 
 from config.config import Config
@@ -46,14 +46,14 @@ class AgentRunner:
             self.agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory)
 
         else:
-            return_intermediate_steps = conf.agent_type not in ["conversational-react-description"]
+            ri_steps = conf.agent_type not in ["conversational-react-description"]
 
             self.agent_executor = initialize_agent(
                 agent=conf.agent_type,
                 tools=tools,
                 llm=llm,
                 memory=memory,
-                return_intermediate_steps=return_intermediate_steps,
+                return_intermediate_steps=ri_steps,
             )
 
         if conf.is_interactive is None:
@@ -88,14 +88,16 @@ class AgentRunner:
         e_sentences_list = list()
 
         while True:
-            print("\nAIへのメッセージを書いてください。\n" "終了する場合は'exit'と入力してください。")
+            print("AIへのメッセージを書いてください。")
+            print("終了する場合は'exit'と入力してください。")
 
             user_message = input()
             if user_message == "exit":
                 break
 
             response, elapsed_time = time_measurement(
-                self.agent_executor.invoke, {"input": {"input": user_message}}
+                self.agent_executor.invoke,
+                {"input": {"input": user_message}}
             )
 
             conversation_log = ConversationLog(

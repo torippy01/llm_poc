@@ -2,12 +2,20 @@ import asyncio
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForToolRun,
+    CallbackManagerForToolRun
+)
 from langchain.tools import BaseTool
 
 from llama_index.indices.query.base import BaseQueryEngine
 from llama_index.llms.utils import LLMType
-from llama_index import LLMPredictor, ServiceContext, StorageContext, load_index_from_storage
+from llama_index import (
+    LLMPredictor,
+    ServiceContext,
+    StorageContext,
+    load_index_from_storage
+)
 
 from utils.utility import create_llm
 
@@ -72,4 +80,8 @@ def CreateUserContextPredictorTool(
     description = f"""
     ユーザーしか知らない知識を{tool_conf["data_source"]}から取得するツール
     """
-    return UserContextPredictorTool(tool_conf["name"], description, query_engine)
+    return UserContextPredictorTool(
+        tool_conf["name"],
+        description,
+        query_engine
+    )

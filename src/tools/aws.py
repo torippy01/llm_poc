@@ -2,7 +2,10 @@ import asyncio
 from typing import Optional
 import subprocess
 
-from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForToolRun,
+    CallbackManagerForToolRun
+)
 from langchain.tools import BaseTool
 
 from utils.utility import get_gpt_response

@@ -39,7 +39,7 @@ class Config:
             elif tool_conf["name"] == "parameter_predictor":
                 tools.append(ParameterPredictorTool())
 
-            if tool_conf["name"] == "shell":
+            elif tool_conf["name"] == "shell":
                 tools.append(ShellAndSummarizeTool())
 
             elif tool_conf["name"] == "human":
