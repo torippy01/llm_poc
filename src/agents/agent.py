@@ -130,3 +130,33 @@ class AgentRunner:
             )
             self.update_conversation_log()
             self.update_eval_sentences_list()
+
+
+    def run_agent_with_single_action(
+        self,
+        user_message: Optional[str] = None
+    ) -> None:
+        """
+        user_messageが引数として渡された場合はその値をエージェントの
+        入力とする．
+        ない場合は`eval_sentences_path`の記述の先頭だけ処理する．
+        """
+
+        if user_message:
+            self.response, self.elapsed_time = time_measurement(
+                self.agent_executor.invoke,
+                {"input": {"input": user_message}}
+            )
+            self.update_conversation_log()
+            self.update_eval_sentences_list()
+
+        else:
+            e_sentences = EvaluateSentence.from_yaml_to_list(
+                self.eval_sentences_path
+            )[0]
+            self.response, self.elapsed_time = time_measurement(
+                self.agent_executor.invoke,
+                {"input": {"input": e_sentences.input}}
+            )
+            self.update_conversation_log()
+            self.update_eval_sentences_list()
