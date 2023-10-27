@@ -1,74 +1,30 @@
 from dataclasses import dataclass
-from enum import Enum, auto
-from typing import Dict, List, Union
+from enum import Enum
+from typing import List
 
 from mdutils.mdutils import MdUtils
 import toml
 
+from langchain.agents.agent_types import AgentType
 from langchain.tools import BaseTool
 
-from config.utils import get_cl_args_for_conf_toml
+from config.utils import get_cl_args_for_conf_toml, agent_types_from_string
+from config.schema import ToolConfig, AgentExecutionMode
 from tools.aws import CommandPredictorTool, ParameterPredictorTool
 from tools.ht import create_HumanTool
 from tools.shell import ShellAndSummarizeTool
 from tools.uc import create_user_context_predictor_tool
 from utils.utility import sep_md, Self
 
-
-class AgentExecutionMode(Enum):
-    """
-    エージェントの実行方式を定義
-    * QA
-        - 事前に準備した問題集に対してエージェントが回答
-        - 問題集を全て回答し次第、チェイン終了
-
-    * INTERACTIVE
-        - チャット形式で人間
-        - 特定のキーワードを人間が入力し次第、チェイン終了
-
-    * SINGLE
-        - 単一の問に対してエージェントが回答
-        - 回答し次第、チェイン終了
-    """
-
-    QA = auto()
-    INTERACTIVE = auto()
-    SINGLE = auto()
-
-    @classmethod
-    def from_str(cls, string: str) -> Union[Enum, None]:
-        """
-        列挙型の値に相当する文字列がある場合のみ`AgentExecutionMode`の列挙型データを返す．
-        `string`の大文字・小文字は考慮しなくてよい．
-        上記の条件に一致しない場合は全て`None`を返す．
-        """
-        if not string:
-            return None
-
-        string = string.upper()
-
-        if string == cls.QA.name:
-            return cls.QA
-
-        elif string == cls.INTERACTIVE.name:
-            return cls.INTERACTIVE
-
-        elif string == cls.SINGLE.name:
-            return cls.SINGLE
-
-        else:
-            return None
-
-
 @dataclass(frozen=True)
 class Config:
 
     agent_execution_mode: Enum
-    agent_type: str
+    agent_type: AgentType
     llm_name: str
     user_index_dir: str
     pull: str
-    tools_conf: Dict[str, str]
+    tools_conf: List[ToolConfig]
     eval_sentences_path: str
     md_filepath: str
     md_title: str
@@ -144,9 +100,13 @@ class Config:
                     "eval_sentences_pathを設定してください"
                 )
 
+            agent_type = agent_types_from_string(
+                toml_data.get("agent_type", "zero-shot-react-description")
+            )
+
             conf = Config(
                 agent_execution_mode=agent_execution_mode,
-                agent_type=toml_data.get("agent_type", "zero-shot-react-description"),
+                agent_type=agent_type,
                 llm_name=toml_data.get("llm", "gpt-4"),
                 user_index_dir=toml_data.get("user_index_dir", "user_context_index"),
                 pull=toml_data.get("pull", None),
@@ -156,7 +116,7 @@ class Config:
                 md_title=toml_data.get("md_title", "TEST"),
             )
 
-            return conf
+            return conf # type: ignore
 
         else:
             raise RuntimeError("Config TOML file is not found.")

@@ -1,6 +1,7 @@
 import asyncio
+from config.schema import ToolConfig
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
 
 from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
@@ -35,8 +36,11 @@ def get_query_engine(
 
 
 def create_user_context_predictor_tool(
-        tool_conf: Dict[str, Any]
+        tool_conf: ToolConfig
     ) -> BaseTool:
+    if not (tool_conf["llm"] and tool_conf["index_dir"]):
+        raise RuntimeError("tool_confに`llm`または`index_dir`が指定されていません")
+
     llm = create_llm(tool_conf["llm"])
     query_engine = get_query_engine(tool_conf["index_dir"], llm)
 
@@ -54,7 +58,8 @@ def create_user_context_predictor_tool(
             query: str,
             run_manager: Optional[CallbackManagerForToolRun] = None,
         ) -> str:
-            return query_engine.query(query)
+            response = query_engine.query(query)
+            return str(response)
 
 
         async def _arun(
@@ -62,8 +67,11 @@ def create_user_context_predictor_tool(
             query: str,
             run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
         ) -> str:
-            return await asyncio.get_event_loop().run_in_executor(
-                None, query_engine.query, query
+            return str(
+                await asyncio.get_event_loop().run_in_executor(
+                        None, query_engine.query, query
+                )
             )
+
 
     return UserContextPredictorTool()

@@ -17,7 +17,7 @@ def get_aws_cli_version() -> str:
 
 
 class CommandPredictorTool(BaseTool):
-    name = "command_predictor"
+    name: str = "command_predictor"
     description: str = f"""
         バージョン{get_aws_cli_version()}のAWS CLIコマンドを取得するツール
     """
@@ -41,7 +41,7 @@ class CommandPredictorTool(BaseTool):
 
 
 class ParameterPredictorTool(BaseTool):
-    name = "parameter_predictor"
+    name: str = "parameter_predictor"
     description: str = f"""
         バージョン{get_aws_cli_version()}のAWS CLIコマンドの引数を取得するツール
     """
