@@ -1,1 +1,1 @@
-uvicorn src.api:app --reload --port 3999
+python src/api.py --conf-toml conf/beta.toml
