@@ -138,13 +138,10 @@ class Config:
 
             eval_sentences_path = toml_data.get("eval_sentence", None)
 
-            # QA, Singleの場合、評価文は必須
-            if agent_execution_mode in [AgentExecutionMode.QA, AgentExecutionMode.SINGLE] \
-                and eval_sentences_path is None:
+            if agent_execution_mode == AgentExecutionMode.QA and eval_sentences_path is None:
                 raise RuntimeError(
-                    f"agent_execution_modeを{AgentExecutionMode.QA.name}または"
-                    "{AgentExecutionMode.SINGLE.name}とする場合はeval_sentences_path"
-                    "を設定してください"
+                    f"agent_execution_modeを{AgentExecutionMode.QA.name}に指定した場合は"
+                    "eval_sentences_pathを設定してください"
                 )
 
             conf = Config(
