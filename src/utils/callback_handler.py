@@ -1,17 +1,12 @@
 from time import time
-from typing import Dict, Any, Optional, List
-
-from langchain.callbacks.base import BaseCallbackHandler
-
-from mdutils.mdutils import MdUtils
-
-from tiktoken import encoding_for_model
-
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
+from langchain.callbacks.base import BaseCallbackHandler
+from mdutils.mdutils import MdUtils
+from tiktoken import encoding_for_model
+
 from conv_log.conv_log import ConversationLog
-
-
 
 
 class CustomCallbackHandler(BaseCallbackHandler):
@@ -20,14 +15,9 @@ class CustomCallbackHandler(BaseCallbackHandler):
     user_input: str
     chain_start_time: float
 
-
-    def __init__(
-        self,
-        md: MdUtils
-    ):
+    def __init__(self, md: MdUtils):
         super().__init__()
         self.md = md
-
 
     def on_chain_start(
         self,
@@ -43,14 +33,11 @@ class CustomCallbackHandler(BaseCallbackHandler):
         """Run when chain starts running."""
         user_input = inputs.get("input")
         if user_input is None:
-            raise RuntimeError(
-                "ユーザーは必ず入力文を入れているはずなのにありません！これはいくないです！"
-            )
+            raise RuntimeError("ユーザーは必ず入力文を入れているはずなのにありません！これはいくないです！")
 
         self.user_input = user_input
         self.chain_start_time = time()
         return
-
 
     def on_text(self, text: str, **kwargs: Any) -> None:
         """Run on arbitrary text."""
@@ -60,7 +47,6 @@ class CustomCallbackHandler(BaseCallbackHandler):
             print(f"token count is {token_count}")
         return
 
-
     def on_chain_end(
         self,
         outputs: Dict[str, Any],
@@ -69,12 +55,9 @@ class CustomCallbackHandler(BaseCallbackHandler):
         parent_run_id: Optional[UUID] = None,
         **kwargs: Any,
     ) -> None:
-
         output = outputs.get("output", None)
         if output is None:
-            raise RuntimeError(
-                "チェインが終わったというのに最終回答がありません！これはいくないです！"
-            )
+            raise RuntimeError("チェインが終わったというのに最終回答がありません！これはいくないです！")
 
         elapsed_time = time() - self.chain_start_time
         conversation_log = ConversationLog(

@@ -2,23 +2,22 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
-from mdutils.mdutils import MdUtils
 import toml
-
 from langchain.agents.agent_types import AgentType
 from langchain.tools import BaseTool
+from mdutils.mdutils import MdUtils
 
-from config.utils import get_cl_args_for_conf_toml, agent_types_from_string
-from config.schema import ToolConfig, AgentExecutionMode
+from config.schema import AgentExecutionMode, ToolConfig
+from config.utils import agent_types_from_string, get_cl_args_for_conf_toml
 from tools.aws import CommandPredictorTool, ParameterPredictorTool
 from tools.ht import create_HumanTool
 from tools.shell import ShellAndSummarizeTool
 from tools.uc import create_user_context_predictor_tool
-from utils.utility import sep_md, Self
+from utils.utility import Self, sep_md
+
 
 @dataclass(frozen=True)
 class Config:
-
     agent_execution_mode: Enum
     agent_type: AgentType
     llm_name: str
@@ -30,7 +29,7 @@ class Config:
     md_title: str
 
     def get_tools(self) -> List[BaseTool]:
-        tools : List[BaseTool] = list()
+        tools: List[BaseTool] = list()
 
         for tool_conf in self.tools_conf:
             if tool_conf["name"] == "command_predictor":
@@ -53,10 +52,8 @@ class Config:
 
         return tools
 
-
     def get_tools_names(self) -> str:
         return ", ".join([t["name"] for t in self.tools_conf])
-
 
     def generate_md_file(self) -> MdUtils:
         md_file = MdUtils(file_name=self.md_filepath, title=self.md_title)
@@ -77,7 +74,6 @@ class Config:
         sep_md(md_file)
         return md_file
 
-
     @classmethod
     def fetch_config(cls) -> Self:
         args = get_cl_args_for_conf_toml()
@@ -94,7 +90,10 @@ class Config:
 
             eval_sentences_path = toml_data.get("eval_sentence", None)
 
-            if agent_execution_mode == AgentExecutionMode.QA and eval_sentences_path is None:
+            if (
+                agent_execution_mode == AgentExecutionMode.QA
+                and eval_sentences_path is None
+            ):
                 raise RuntimeError(
                     f"agent_execution_modeを{AgentExecutionMode.QA.name}に指定した場合は"
                     "eval_sentences_pathを設定してください"
@@ -116,7 +115,7 @@ class Config:
                 md_title=toml_data.get("md_title", "TEST"),
             )
 
-            return conf # type: ignore
+            return conf  # type: ignore
 
         else:
             raise RuntimeError("Config TOML file is not found.")

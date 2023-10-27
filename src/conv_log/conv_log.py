@@ -1,25 +1,20 @@
 from dataclasses import dataclass
 from typing import List, Sequence, Union
 
-from mdutils.mdutils import MdUtils
-
 from langchain.schema import AgentAction, AIMessage, HumanMessage
-
 from llama_index.response.schema import Response
+from mdutils.mdutils import MdUtils
 
 from utils.utility import sep_md
 
 
-
 @dataclass(frozen=True)
 class ConversationLog:
-
     input: str
     output: str
     intermediate_steps: Union[Sequence[AgentAction], Sequence[str], None]
     chat_history: Union[List[HumanMessage], List[AIMessage], None]
     elapsed_time: float
-
 
     def dump(self, md_file: MdUtils) -> None:
         md_file.new_header(

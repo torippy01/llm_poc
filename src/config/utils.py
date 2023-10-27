@@ -1,4 +1,5 @@
 import argparse
+
 from langchain.agents.agent_types import AgentType
 
 
@@ -39,9 +40,6 @@ def agent_types_from_string(agent_type_str: str) -> AgentType:
 def get_cl_args_for_conf_toml() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--conf-toml",
-        "-tm",
-        type=str,
-        help="Please specify config TOML file."
+        "--conf-toml", "-tm", type=str, help="Please specify config TOML file."
     )
     return parser.parse_args()

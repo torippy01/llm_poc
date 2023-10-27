@@ -1,15 +1,12 @@
 import asyncio
-from typing import Optional
 import subprocess
+from typing import Optional
 
-from langchain.callbacks.manager import (
-    AsyncCallbackManagerForToolRun,
-    CallbackManagerForToolRun
-)
+from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
+                                         CallbackManagerForToolRun)
 from langchain.tools import BaseTool
 
 from utils.utility import get_gpt_response
-
 
 
 def get_aws_cli_version() -> str:
@@ -37,7 +34,6 @@ class CommandPredictorTool(BaseTool):
         return await asyncio.get_event_loop().run_in_executor(
             None, get_gpt_response, query
         )
-
 
 
 class ParameterPredictorTool(BaseTool):

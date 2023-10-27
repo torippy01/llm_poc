@@ -5,7 +5,6 @@ from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
 from index.utils import get_cl_args_for_context_index
 
 
-
 def test() -> None:
     args = get_cl_args_for_context_index()
     logging.basicConfig(level=logging.INFO)
@@ -24,4 +23,3 @@ def test() -> None:
     index.storage_context.persist(persist_dir)
     logging.info("インデックスを%sに保存しました．", persist_dir)
     return
-
