@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional, Union
 
 from langchain import hub
 from langchain.agents import AgentExecutor, initialize_agent
@@ -135,7 +135,7 @@ class AgentRunner:
     def run_agent_with_single_action(
         self,
         user_message: Optional[str] = None
-    ) -> None:
+    ) -> Union[None, str]:
         """
         user_messageが引数として渡された場合はその値をエージェントの
         入力とする．
@@ -149,8 +149,12 @@ class AgentRunner:
             )
             self.update_conversation_log()
             self.update_eval_sentences_list()
+            return self.response.get("output", None)
 
         else:
+            if not self.eval_sentences_path:
+                raise RuntimeError("回答すべき質問が見当たりませんでした")
+
             e_sentences = EvaluateSentence.from_yaml_to_list(
                 self.eval_sentences_path
             )[0]
