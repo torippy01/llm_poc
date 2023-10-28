@@ -4,7 +4,7 @@ from langchain.agents.agent_types import AgentType
 
 
 def agent_types_from_string(agent_type_str: str) -> AgentType:
-    agent_type_str = agent_type_str.upper()
+    agent_type_str = agent_type_str.upper().replace("-", "_")
 
     if agent_type_str == AgentType.ZERO_SHOT_REACT_DESCRIPTION.name:
         return AgentType.ZERO_SHOT_REACT_DESCRIPTION
