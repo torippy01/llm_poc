@@ -1,20 +1,15 @@
-from dotenv import load_dotenv
 import time
 from typing import Any, Callable, TypeVar
 
-from mdutils.mdutils import MdUtils
-
 import langchain
+from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
-
+from mdutils.mdutils import MdUtils
 from openai import ChatCompletion
-
-
 
 ## you can use typing.Self after python 3.11
 Self = TypeVar("Self")
-
 
 
 def set_up() -> None:
@@ -24,10 +19,13 @@ def set_up() -> None:
 
 
 def get_gpt_response(query: str) -> str:
-    return ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": query}]
-    ).choices[0]["message"]["content"].strip()
+    return (
+        ChatCompletion.create(
+            model="gpt-3.5-turbo", messages=[{"role": "user", "content": query}]
+        )
+        .choices[0]["message"]["content"]
+        .strip()
+    )
 
 
 def time_measurement(func: Callable, val: Any) -> Any:
@@ -43,9 +41,7 @@ def create_llm(llm_name: str) -> ChatOpenAI:
 
 def create_CBmemory() -> ConversationBufferMemory:
     return ConversationBufferMemory(
-        return_messages=True,
-        memory_key="chat_history",
-        output_key="output"
+        return_messages=True, memory_key="chat_history", output_key="output"
     )
 
 

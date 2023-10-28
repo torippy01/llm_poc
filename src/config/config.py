@@ -1,36 +1,35 @@
 from dataclasses import dataclass
-from typing import Dict, List
+from enum import Enum
+from typing import List
 
-from mdutils.mdutils import MdUtils
 import toml
-
+from langchain.agents.agent_types import AgentType
 from langchain.tools import BaseTool
+from mdutils.mdutils import MdUtils
 
-from config.utils import get_cl_args_for_conf_toml
+from config.schema import AgentExecutionMode, ToolConfig
+from config.utils import agent_types_from_string, get_cl_args_for_conf_toml
 from tools.aws import CommandPredictorTool, ParameterPredictorTool
 from tools.ht import create_HumanTool
 from tools.shell import ShellAndSummarizeTool
 from tools.uc import create_user_context_predictor_tool
-from utils.utility import sep_md, Self
-
+from utils.utility import Self, sep_md
 
 
 @dataclass(frozen=True)
 class Config:
-
-    is_interactive: bool
-    agent_type: str
+    agent_execution_mode: Enum
+    agent_type: AgentType
     llm_name: str
     user_index_dir: str
     pull: str
-    tools_conf: Dict[str, str]
+    tools_conf: List[ToolConfig]
     eval_sentences_path: str
     md_filepath: str
     md_title: str
 
-
     def get_tools(self) -> List[BaseTool]:
-        tools : List[BaseTool] = list()
+        tools: List[BaseTool] = list()
 
         for tool_conf in self.tools_conf:
             if tool_conf["name"] == "command_predictor":
@@ -53,10 +52,8 @@ class Config:
 
         return tools
 
-
     def get_tools_names(self) -> str:
         return ", ".join([t["name"] for t in self.tools_conf])
-
 
     def generate_md_file(self) -> MdUtils:
         md_file = MdUtils(file_name=self.md_filepath, title=self.md_title)
@@ -77,7 +74,6 @@ class Config:
         sep_md(md_file)
         return md_file
 
-
     @classmethod
     def fetch_config(cls) -> Self:
         args = get_cl_args_for_conf_toml()
@@ -86,22 +82,40 @@ class Config:
             with open(args.conf_toml, "r") as f:
                 toml_data = toml.load(f)
 
+            agent_execution_mode = AgentExecutionMode.from_str(
+                string=toml_data.get("agent_execution_mode", "")
+            )
+            if agent_execution_mode is None:
+                raise ValueError("agent_execution_modeの値が不正です")
+
+            eval_sentences_path = toml_data.get("eval_sentence", None)
+
+            if (
+                agent_execution_mode == AgentExecutionMode.QA
+                and eval_sentences_path is None
+            ):
+                raise RuntimeError(
+                    f"agent_execution_modeを{AgentExecutionMode.QA.name}に指定した場合は"
+                    "eval_sentences_pathを設定してください"
+                )
+
+            agent_type = agent_types_from_string(
+                toml_data.get("agent_type", "zero-shot-react-description")
+            )
+
             conf = Config(
-                is_interactive=toml_data.get("interactive", False),
-                agent_type=toml_data.get("agent_type", "zero-shot-react-description"),
+                agent_execution_mode=agent_execution_mode,
+                agent_type=agent_type,
                 llm_name=toml_data.get("llm", "gpt-4"),
                 user_index_dir=toml_data.get("user_index_dir", "user_context_index"),
                 pull=toml_data.get("pull", None),
                 tools_conf=toml_data.get("tools_conf", {}),
-                eval_sentences_path=toml_data.get(
-                    "eval_sentence",
-                    "eval_sentence/test_ai_answer.yaml"
-                ),
+                eval_sentences_path=eval_sentences_path,
                 md_filepath=toml_data.get("md_filepath", "./repo/results/test.md"),
                 md_title=toml_data.get("md_title", "TEST"),
             )
 
-            return conf
+            return conf  # type: ignore
 
         else:
             raise RuntimeError("Config TOML file is not found.")

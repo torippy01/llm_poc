@@ -1,7 +1,6 @@
 import argparse
 
 
-
 def get_cl_args_for_dataset_yaml() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 

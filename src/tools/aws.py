@@ -1,15 +1,12 @@
 import asyncio
-from typing import Optional
 import subprocess
+from typing import Optional
 
-from langchain.callbacks.manager import (
-    AsyncCallbackManagerForToolRun,
-    CallbackManagerForToolRun
-)
+from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
+                                         CallbackManagerForToolRun)
 from langchain.tools import BaseTool
 
 from utils.utility import get_gpt_response
-
 
 
 def get_aws_cli_version() -> str:
@@ -17,7 +14,7 @@ def get_aws_cli_version() -> str:
 
 
 class CommandPredictorTool(BaseTool):
-    name = "command_predictor"
+    name: str = "command_predictor"
     description: str = f"""
         バージョン{get_aws_cli_version()}のAWS CLIコマンドを取得するツール
     """
@@ -39,9 +36,8 @@ class CommandPredictorTool(BaseTool):
         )
 
 
-
 class ParameterPredictorTool(BaseTool):
-    name = "parameter_predictor"
+    name: str = "parameter_predictor"
     description: str = f"""
         バージョン{get_aws_cli_version()}のAWS CLIコマンドの引数を取得するツール
     """
