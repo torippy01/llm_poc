@@ -5,7 +5,6 @@ llama-index
 openai
 llama-hub
 ruff
-isort
 beautifulsoup4
 argparse
 mdutils
