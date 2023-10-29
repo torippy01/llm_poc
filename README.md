@@ -7,6 +7,10 @@
 
   `pip install -r requirements.txt`
 
+* pre-commitのフックスクリプトをインストール
+
+  `pre-commit install`
+
 * .envファイルの整備
 
   .envファイルに以下の記述を追加
