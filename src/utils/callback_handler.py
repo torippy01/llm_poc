@@ -33,7 +33,10 @@ class CustomCallbackHandler(BaseCallbackHandler):
         """Run when chain starts running."""
         user_input = inputs.get("input")
         if user_input is None:
-            raise RuntimeError("ユーザーは必ず入力文を入れているはずなのにありません！これはいくないです！")
+            raise RuntimeError(
+                "ユーザーは必ず入力文を入れているはずなのにありません！"
+                "これはいくないです！"
+            )
 
         self.user_input = user_input
         self.chain_start_time = time()
@@ -57,7 +60,10 @@ class CustomCallbackHandler(BaseCallbackHandler):
     ) -> None:
         output = outputs.get("output", None)
         if output is None:
-            raise RuntimeError("チェインが終わったというのに最終回答がありません！これはいくないです！")
+            raise RuntimeError(
+                "チェインが終わったというのに最終回答がありません！"
+                "これはいくないです！"
+            )
 
         elapsed_time = time() - self.chain_start_time
         conversation_log = ConversationLog(

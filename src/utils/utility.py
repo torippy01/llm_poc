@@ -8,7 +8,7 @@ from langchain.memory import ConversationBufferMemory
 from mdutils.mdutils import MdUtils
 from openai import ChatCompletion
 
-## you can use typing.Self after python 3.11
+# you can use typing.Self after python 3.11
 Self = TypeVar("Self")
 
 

@@ -2,9 +2,9 @@
 python src/api.py --conf-toml conf/beta.toml
 """
 import os
-import requests
 import sys
 
+import requests
 import uvicorn
 
 sys.path.append("./src/")
@@ -12,10 +12,10 @@ sys.path.append("./src/")
 from typing import Optional, TypedDict  # noqa: E402
 
 from fastapi import FastAPI, HTTPException  # noqa: E402
+from pydantic import BaseModel  # noqa: E402
 
 from agents.agent import AgentRunner  # noqa: E402
 from config.config import Config  # noqa: E402
-from pydantic import BaseModel  # noqa: E402
 from utils.utility import set_up  # noqa: E402
 
 set_up()
