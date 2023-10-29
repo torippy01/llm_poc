@@ -18,9 +18,9 @@
 1. 任意のディレクトリにドキュメントを置く
 2. インデックスファイルを作成
     ```bash
-    python src/index/create_user_index.py \
-      --index-id <index ID> \
-      --context-dir <ドキュメントのディレクトリ名>
+    python src/validate_ci.py \
+      --index-id user_context_index \
+      --context-dir user_context/context
     ```
     - インデックスファイルの本体は`storage/<index ID>`に配置
 
