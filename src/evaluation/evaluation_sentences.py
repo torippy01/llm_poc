@@ -64,14 +64,14 @@ class EvaluateSentence:
     ) -> List[Self]:
 
         if yaml_filepath is None:
-            raise RuntimeError("no file is specified.")
+            raise ValueError("Invalid value : yaml_filepath")
         with open(yaml_filepath) as f:
             listed_dict = yaml.safe_load(f)
 
-        if listed_dict is not None:
-            return [self.from_dict(e_dict) for e_dict in listed_dict]
-        else:
-            raise RuntimeError("no sentences to evaluate in file")
+        if listed_dict is None:
+            raise RuntimeError("No sentences to evaluate in yaml file.")
+
+        return [self.from_dict(e_dict) for e_dict in listed_dict]
 
 
     @classmethod
@@ -97,7 +97,7 @@ class EvaluateSentence:
             dict_list.append(e_sentences.to_dict())
 
         if len(dict_list) == 0:
-            raise ValueError("評価すべき文章が登録されていません。")
+            raise RuntimeError("No sentences to evaluate in list.")
 
         with open(yaml_filepath, "w") as f:
             yaml.dump(dict_list, f, allow_unicode=True)

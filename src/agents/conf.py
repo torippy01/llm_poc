@@ -33,7 +33,7 @@ class Config:
     def get_tools(self) -> List[BaseTool]:
         tools = [tool_conf.get_tool() for tool_conf in self.tool_confs]
         if len(tools) == 0:
-            raise RuntimeError("no tools are specified.")
+            raise RuntimeError("Config error : set 'tool_confs'")
         return tools
 
 
@@ -68,26 +68,23 @@ class Config:
     ) -> Self:
 
         if toml_path is None:
-            raise RuntimeError("Config TOML file is not found.")
+            raise ValueError("Invalid value : toml_path")
 
         with open(toml_path, "r") as f:
             toml_data = toml.load(f)
 
         agent_execution_mode = AgentExecutionMode.from_str(
-            toml_data.get("agent_execution_mode", "")
+            toml_data.get("agent_execution_mode", None)
         )
 
         if agent_execution_mode is None:
-            raise ValueError("Invalid value : agent_execution_mode")
+            raise ValueError("Config error : set 'agent_execution_mode'")
 
         eval_sentences_input_path = None
         if agent_execution_mode == AgentExecutionMode.QA:
             eval_sentences_input_path = toml_data.get("eval_sentence", None)
             if eval_sentences_input_path is None:
-                raise ValueError(
-                    f"agent_execution_modeを{AgentExecutionMode.QA.name}に指定した場合は"
-                    "eval_sentenceを設定してください"
-                )
+                raise ValueError("Config error : set 'eval_sentence'")
 
         agent_type = agent_types_from_string(
             toml_data.get("agent_type", "zero-shot-react-description")

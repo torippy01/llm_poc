@@ -36,7 +36,9 @@ def create_user_context_predictor_tool(
 ) -> BaseTool:
 
     if not (llm_name and index_dir):
-        raise RuntimeError("tool_confに`llm`または`index_dir`が指定されていません")
+        raise ValueError(
+            f"Config error : set 'llm_name' and 'index_dir' for tool {name}"
+        )
 
     llm = create_llm(llm_name)
     query_engine = get_query_engine(index_dir, llm)

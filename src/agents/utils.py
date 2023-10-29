@@ -70,5 +70,5 @@ def agent_types_from_string(agent_type_str: str) -> AgentType:
         return AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION
 
     else:
-        raise ValueError("利用可能なエージェントタイプが指定されていません")
+        raise ValueError("Invalid value : agent_type_str")
 

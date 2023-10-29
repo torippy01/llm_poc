@@ -67,8 +67,8 @@ class AgentRunner:
             self.run_agent_with_single_action()
 
         else:
-            raise RuntimeError(
-                f"Invalid agent_execution_mode : {self.agent_execution_mode}"
+            raise ValueError(
+                f"Invalid value : agent_execution_mode = {self.agent_execution_mode}"
             )
 
         if self.eval_sentences_output_path:
@@ -83,8 +83,8 @@ class AgentRunner:
 
     def run_agent_with_interactive(self) -> None:
         while True:
-            print("AIへのメッセージを書いてください。")
-            print("終了する場合は'exit'と入力してください。")
+            print("feel free to ask me any questions. I'm here to help.")
+            print("If you want to exit, just type 'exit'.")
 
             user_message = input()
             if user_message == "exit":
@@ -113,7 +113,7 @@ class AgentRunner:
 
         else:
             if self.eval_sentences_input_path is None:
-                raise RuntimeError("回答すべき質問が見当たりませんでした")
+                raise ValueError("Invalid value : eval_sentences_input_path")
 
             e_sentence = EvaluateSentence.from_yaml_to_list(self.eval_sentences_input_path)[0]
             self.agent_executor({"input": e_sentence.input})
