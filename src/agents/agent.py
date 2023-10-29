@@ -1,64 +1,59 @@
-from typing import Optional, Union
+from typing import Optional
 
-from langchain import hub
 from langchain.agents import AgentExecutor, initialize_agent
-from langchain.agents.format_scratchpad import format_log_to_str
-from langchain.agents.output_parsers import ReActSingleInputOutputParser
+from langchain.callbacks.base import BaseCallbackManager
 from langchain.tools.render import render_text_description
 
-from config.config import AgentExecutionMode, Config
-from conv_log.conv_log import ConversationLog
+from agents.conf import Config
+from agents.mode import AgentExecutionMode
+from agents.utils import fetch_agent_from_hub
+from callback.callback import CustomCallbackHandler
 from evaluation.evaluation_sentences import EvaluateSentence
-from utils.utility import create_CBmemory, create_llm, time_measurement
+from utils.utility import create_CBmemory, create_llm
+
 
 
 class AgentRunner:
-    # hub.pull()の結果がpromptを前提としているが、実際はその限りでない
-    # TODO: hub.pullの結果を判別してagentに適用するよう修正
-    def __init__(self, conf: Config):
+
+    def __init__(
+        self,
+        conf: Config
+    ):
+
+        self.handler = CustomCallbackHandler(conf.generate_md_file())
+
+        tools = conf.get_tools()
         llm = create_llm(conf.llm_name)
         memory = create_CBmemory()
-        tools = conf.get_tools()
 
         if conf.pull:
-            prompt = hub.pull(conf.pull)
-            prompt = prompt.partial(
-                tools=render_text_description(tools),
-                tool_names=conf.get_tools_names(),
+            self.agent_executor = AgentExecutor(
+                agent=fetch_agent_from_hub(
+                    pull=conf.pull,
+                    llm=llm,
+                    tool_description=render_text_description(tools),
+                    tool_names=conf.get_name_of_tools()
+                ),
+                tools=tools,
+                memory=memory,
+                callback_manager=BaseCallbackManager([self.handler])
             )
-
-            llm_with_stop = llm.bind(stop=["\nObservation"])
-
-            agent = (
-                {
-                    "input": lambda x: x["input"],
-                    "agent_scratchpad": lambda x: format_log_to_str(
-                        x["intermediate_steps"]
-                    ),
-                    "chat_history": lambda x: x["chat_history"],
-                }
-                | prompt
-                | llm_with_stop
-                | ReActSingleInputOutputParser()
-            )
-
-            self.agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory)
 
         else:
-            ri_steps = conf.agent_type not in ["conversational-react-description"]
-
             self.agent_executor = initialize_agent(
                 agent=conf.agent_type,
                 tools=tools,
                 llm=llm,
                 memory=memory,
-                return_intermediate_steps=ri_steps,
+                return_intermediate_steps=(
+                    conf.agent_type != "conversational-react-description"
+                ),
+                callback_manager=BaseCallbackManager([self.handler])
             )
 
         self.eval_sentences_path = conf.eval_sentences_path
         self.agent_execution_mode = conf.agent_execution_mode
-        self.e_sentences_list = list()
-        self.md_file = conf.generate_md_file()
+
 
     def run(self) -> None:
         if self.agent_execution_mode == AgentExecutionMode.INTERACTIVE:
@@ -70,32 +65,20 @@ class AgentRunner:
         elif self.agent_execution_mode == AgentExecutionMode.SINGLE:
             self.run_agent_with_single_action()
 
+        else:
+            raise RuntimeError(
+                f"Invalid agent_execution_mode : {self.agent_execution_mode}"
+            )
+
         if self.eval_sentences_path:
             EvaluateSentence.from_list_to_yaml(
-                self.e_sentences_list, self.eval_sentences_path
+                self.handler.e_sentence_list,
+                self.eval_sentences_path
             )
 
-        self.md_file.create_md_file()
+        self.handler.md_file.create_md_file()
+        return
 
-    def update_conversation_log(self):
-        conversation_log = ConversationLog(
-            input=self.response.get("input"),
-            output=self.response.get("output"),
-            intermediate_steps=self.response.get("intermediate_steps", None),
-            chat_history=self.response.get("chat_history", None),
-            elapsed_time=self.elapsed_time,
-        )
-        conversation_log.dump(self.md_file)
-
-    def update_eval_sentences_list(self):
-        self.e_sentences_list.append(
-            EvaluateSentence(
-                input=self.response.get("input"),
-                output=self.response.get("output"),
-                human_answer=None,
-                evaluation=None,
-            )
-        )
 
     def run_agent_with_interactive(self) -> None:
         while True:
@@ -104,27 +87,21 @@ class AgentRunner:
 
             user_message = input()
             if user_message == "exit":
-                break
+                return
+            self.agent_executor({"input": user_message})
 
-            self.response, self.elapsed_time = time_measurement(
-                self.agent_executor.invoke, {"input": {"input": user_message}}
-            )
-
-            self.update_conversation_log()
-            self.update_eval_sentences_list()
 
     def run_agent_with_Q_and_A(self) -> None:
-        e_sentences_list = EvaluateSentence.from_yaml_to_list(self.eval_sentences_path)
-        for e_sentences in e_sentences_list:
-            self.response, self.elapsed_time = time_measurement(
-                self.agent_executor.invoke, {"input": {"input": e_sentences.input}}
-            )
-            self.update_conversation_log()
-            self.update_eval_sentences_list()
+        e_sentence_list = EvaluateSentence.from_yaml_to_list(self.eval_sentences_path)
+        for e_sentence in e_sentence_list:
+            self.agent_executor(input={"input": e_sentence.input})
+        return
+
 
     def run_agent_with_single_action(
-        self, user_message: Optional[str] = None
-    ) -> Union[None, str]:
+        self,
+        user_message: Optional[str] = None
+    ) -> Optional[str]:
         """
         user_messageが引数として渡された場合はその値をエージェントの
         入力とする．
@@ -132,22 +109,13 @@ class AgentRunner:
         """
 
         if user_message:
-            self.response, self.elapsed_time = time_measurement(
-                self.agent_executor.invoke, {"input": {"input": user_message}}
-            )
-            self.update_conversation_log()
-            self.update_eval_sentences_list()
-            return self.response.get("output", None)
+            response = self.agent_executor(input={"input": user_message})
+            return response.get("output", None)
 
         else:
             if not self.eval_sentences_path:
                 raise RuntimeError("回答すべき質問が見当たりませんでした")
 
-            e_sentences = EvaluateSentence.from_yaml_to_list(self.eval_sentences_path)[
-                0
-            ]
-            self.response, self.elapsed_time = time_measurement(
-                self.agent_executor.invoke, {"input": {"input": e_sentences.input}}
-            )
-            self.update_conversation_log()
-            self.update_eval_sentences_list()
+            e_sentence = EvaluateSentence.from_yaml_to_list(self.eval_sentences_path)[0]
+            self.agent_executor(input={"input": e_sentence.input})
+            return
