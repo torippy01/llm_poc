@@ -1,1 +1,1 @@
-python src/api.py --conf-toml conf/beta.toml
+nohup python src/api.py --conf-toml conf/beta.toml &
