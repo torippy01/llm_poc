@@ -1,9 +1,8 @@
 langchain
+langchain-experimental
 langchainhub
 llama-index
-streamlit
 openai
-streamlit-chat
 llama-hub
 ruff
 beautifulsoup4
