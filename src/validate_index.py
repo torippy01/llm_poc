@@ -1,12 +1,42 @@
+import argparse
 import logging
 
 from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
 
-from index.utils import get_cl_args_for_context_index
+from utils.utility import set_up
+
+"""
+Usage :
+python src/validate_index.py --index-id ??? --context-dir ???
+"""
 
 
-def test() -> None:
-    args = get_cl_args_for_context_index()
+def get_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--index-id",
+        type=str,
+        default="user_context_index",
+        help="インデックスIDを指定します。",
+    )
+
+    parser.add_argument(
+        "--context-dir",
+        type=str,
+        default="./user_context",
+        help="コンテキストのファイルが保存されるディレクトリを指定します。",
+    )
+
+    return parser.parse_args()
+
+
+
+def main() -> None:
+    set_up()
+
+    args = get_args()
+
     logging.basicConfig(level=logging.INFO)
 
     logging.info("%sから を使ってドキュメントを取得しています．", args.context_dir)
@@ -23,3 +53,7 @@ def test() -> None:
     index.storage_context.persist(persist_dir)
     logging.info("インデックスを%sに保存しました．", persist_dir)
     return
+
+
+if __name__ == "__main__":
+    main()
