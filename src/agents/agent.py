@@ -95,17 +95,19 @@ class AgentRunner:
     def run_agent_with_Q_and_A(self) -> None:
         e_sentence_list = EvaluateSentence.from_yaml_to_list(self.eval_sentences_input_path)
         for e_sentence in e_sentence_list:
-            self.agent_executor(input={"input": e_sentence.input})
+            self.agent_executor({"input": e_sentence.input})
         return
 
 
     def run_agent_with_single_action(
-        self,
-        user_message: Optional[str] = None
+        self
     ) -> Optional[str]:
 
+        print("input message to AI")
+        user_message = input()
+
         if user_message:
-            response = self.agent_executor(input={"input": user_message})
+            response = self.agent_executor({"input": user_message})
             return response.get("output", None)
 
         else:
@@ -113,5 +115,5 @@ class AgentRunner:
                 raise RuntimeError("回答すべき質問が見当たりませんでした")
 
             e_sentence = EvaluateSentence.from_yaml_to_list(self.eval_sentences_input_path)[0]
-            self.agent_executor(input={"input": e_sentence.input})
+            self.agent_executor({"input": e_sentence.input})
             return

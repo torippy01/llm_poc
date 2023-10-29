@@ -34,8 +34,6 @@ class CustomCallbackHandler(BaseCallbackHandler):
     ) -> None:
 
         user_input = inputs.get("input")
-        if user_input is None:
-            raise TypeError("Invalid type: user_input is NoneType")
 
         self.user_input = user_input
         self.chain_start_time = time()
@@ -65,8 +63,10 @@ class CustomCallbackHandler(BaseCallbackHandler):
     ) -> None:
 
         output = outputs.get("output", None)
+
         if output is None:
-            raise TypeError("Invalid type: output is NoneType")
+            # I don't know the reason to skip logging, but it may be necessary.
+            return
 
         elapsed_time = time() - self.chain_start_time
 
