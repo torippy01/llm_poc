@@ -8,10 +8,12 @@ from utils.utility import Self, get_gpt_response
 
 @dataclass
 class EvaluateSentence:
+
     input: str
     output: str
     human_answer: Optional[str]
     evaluation: Optional[str]
+
 
     def evaluate(self) -> None:
         content = f"""
@@ -29,6 +31,7 @@ class EvaluateSentence:
         self.evaluation = get_gpt_response(content)
         return
 
+
     def to_dict(self) -> Dict[str, Optional[str]]:
         e_dict = {
             "input": self.input,
@@ -38,8 +41,13 @@ class EvaluateSentence:
         }
         return e_dict
 
+
     @classmethod
-    def from_dict(self, e_dict: Dict[str, Optional[str]]) -> Self:
+    def from_dict(
+        self,
+        e_dict: Dict[str, Optional[str]]
+    ) -> Self:
+
         e_sentences = EvaluateSentence(
             input=e_dict["input"],
             output=e_dict["output"],
@@ -48,8 +56,13 @@ class EvaluateSentence:
         )
         return e_sentences
 
+
     @classmethod
-    def from_yaml_to_list(self, yaml_filepath: Optional[str]) -> List[Self]:
+    def from_yaml_to_list(
+        self,
+        yaml_filepath: Optional[str]
+    ) -> List[Self]:
+
         if yaml_filepath is None:
             raise RuntimeError("no file is specified.")
         with open(yaml_filepath) as f:
@@ -60,9 +73,12 @@ class EvaluateSentence:
         else:
             raise RuntimeError("no sentences to evaluate in file")
 
+
     @classmethod
     def from_list_to_yaml(
-        self, e_sentences_list: List[Self], yaml_filepath: str
+        self,
+        e_sentences_list: List[Self],
+        yaml_filepath: str
     ) -> None:
         """
         以下のリストデータに変換
