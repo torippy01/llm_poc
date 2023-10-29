@@ -88,8 +88,9 @@ class AgentRunner:
 
             user_message = input()
             if user_message == "exit":
-                return
+                break
             self.agent_executor({"input": user_message})
+        return
 
 
     def run_agent_with_Q_and_A(self) -> None:
