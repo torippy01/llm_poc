@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List, Optional
 
 import toml
@@ -23,7 +24,8 @@ class Config:
     user_index_dir: str
     pull: str
     tool_confs: List[ToolConfig]
-    eval_sentences_path: str
+    eval_sentences_input_path: Optional[str]
+    eval_sentences_output_path: str
     md_filepath: str
     md_title: str
 
@@ -78,18 +80,22 @@ class Config:
         if agent_execution_mode is None:
             raise ValueError("Invalid value : agent_execution_mode")
 
-        eval_sentences_path = None
+        eval_sentences_input_path = None
         if agent_execution_mode == AgentExecutionMode.QA:
-            eval_sentences_path = toml_data.get("eval_sentence", None)
-            if eval_sentences_path is None:
+            eval_sentences_input_path = toml_data.get("eval_sentence", None)
+            if eval_sentences_input_path is None:
                 raise ValueError(
                     f"agent_execution_modeを{AgentExecutionMode.QA.name}に指定した場合は"
-                    "eval_sentences_pathを設定してください"
+                    "eval_sentenceを設定してください"
                 )
 
         agent_type = agent_types_from_string(
             toml_data.get("agent_type", "zero-shot-react-description")
         )
+
+        default_output_path = "eval_sentence/result/" + datetime.utcfromtimestamp(
+            int(datetime.now().timestamp())
+        ).strftime('%Y%m%d_%H%M%S') + ".yaml"
 
         conf = Config(
             agent_execution_mode=agent_execution_mode,
@@ -98,7 +104,8 @@ class Config:
             user_index_dir=toml_data.get("user_index_dir", "user_context_index"),
             pull=toml_data.get("pull", None),
             tool_confs=ToolConfig.fetch(toml_data.get("tools_conf", {})),
-            eval_sentences_path=eval_sentences_path,
+            eval_sentences_input_path=eval_sentences_input_path,
+            eval_sentences_output_path=toml_data.get("eval_output", default_output_path),
             md_filepath=toml_data.get("md_filepath", "./repo/results/test.md"),
             md_title=toml_data.get("md_title", "TEST"),
         )

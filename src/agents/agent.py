@@ -51,7 +51,8 @@ class AgentRunner:
                 callback_manager=BaseCallbackManager([self.handler])
             )
 
-        self.eval_sentences_path = conf.eval_sentences_path
+        self.eval_sentences_input_path = conf.eval_sentences_input_path
+        self.eval_sentences_output_path = conf.eval_sentences_output_path
         self.agent_execution_mode = conf.agent_execution_mode
 
 
@@ -70,10 +71,10 @@ class AgentRunner:
                 f"Invalid agent_execution_mode : {self.agent_execution_mode}"
             )
 
-        if self.eval_sentences_path:
+        if self.eval_sentences_output_path:
             EvaluateSentence.from_list_to_yaml(
                 self.handler.e_sentence_list,
-                self.eval_sentences_path
+                self.eval_sentences_output_path
             )
 
         self.handler.md_file.create_md_file()
@@ -92,7 +93,7 @@ class AgentRunner:
 
 
     def run_agent_with_Q_and_A(self) -> None:
-        e_sentence_list = EvaluateSentence.from_yaml_to_list(self.eval_sentences_path)
+        e_sentence_list = EvaluateSentence.from_yaml_to_list(self.eval_sentences_input_path)
         for e_sentence in e_sentence_list:
             self.agent_executor(input={"input": e_sentence.input})
         return
@@ -102,20 +103,15 @@ class AgentRunner:
         self,
         user_message: Optional[str] = None
     ) -> Optional[str]:
-        """
-        user_messageが引数として渡された場合はその値をエージェントの
-        入力とする．
-        ない場合は`eval_sentences_path`の記述の先頭だけ処理する．
-        """
 
         if user_message:
             response = self.agent_executor(input={"input": user_message})
             return response.get("output", None)
 
         else:
-            if not self.eval_sentences_path:
+            if self.eval_sentences_input_path is None:
                 raise RuntimeError("回答すべき質問が見当たりませんでした")
 
-            e_sentence = EvaluateSentence.from_yaml_to_list(self.eval_sentences_path)[0]
+            e_sentence = EvaluateSentence.from_yaml_to_list(self.eval_sentences_input_path)[0]
             self.agent_executor(input={"input": e_sentence.input})
             return
