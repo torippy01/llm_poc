@@ -11,7 +11,10 @@
 
   .envファイルに以下の記述を追加
   ```
-  OPENAI_API_KEY="<openaiのAPIキー>"
+  OPENAI_API_KEY=<openaiのAPIキー>
+  XECRETARY_SV_HOST=<チャットボットサーバーのIP>
+  XECRETARY_SV_PORT=<チャットボットサーバーのPORT>
+  SEND_MESSAGE_URL=<チャットレイヤーサーバのエンドポイントURL>
   ```
 
 ## ユーザーコンテキストの作成
@@ -41,9 +44,20 @@
 ## 設定ファイルの作成
 - [リンク参照](./how_to_config.md)
 
-## 実行
+## エージェント実行
 ```bash
 python src/validate.py --conf-toml conf/test.toml
+```
+
+## β版サーバー
+### 起動
+```bash
+. script/run_beta_sv.sh
+```
+
+### 停止
+```bash
+. script/stop_beta_sv.sh
 ```
 
 ## 検証レポート
