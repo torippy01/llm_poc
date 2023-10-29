@@ -7,7 +7,7 @@ from utils.utility import set_up
 
 """
 Usage :
-python src/validate2.py --index-id ??? --context-dir ???
+python src/validate_index.py --index-id ??? --context-dir ???
 """
 
 
