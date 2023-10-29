@@ -9,8 +9,10 @@ from langchain.tools import BaseTool
 from utils.utility import get_gpt_response
 
 
+
 def get_aws_cli_version() -> str:
     return subprocess.check_output(["aws", "--version"]).decode("utf-8").strip()
+
 
 
 class CommandPredictorTool(BaseTool):
@@ -34,6 +36,7 @@ class CommandPredictorTool(BaseTool):
         return await asyncio.get_event_loop().run_in_executor(
             None, get_gpt_response, query
         )
+
 
 
 class ParameterPredictorTool(BaseTool):
