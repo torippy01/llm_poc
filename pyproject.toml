@@ -1,4 +1,5 @@
 [tool.ruff]
 target-version = "py39"
 line-length = 88
+select=["E", "W"]
 ignore = ["E722"]
