@@ -7,6 +7,11 @@
 
   `pip install -r requirements.txt`
 
+* pre-commitのインストール
+
+  `pre-commit install`
+
+
 * .envファイルの整備
 
   .envファイルに以下の記述を追加
