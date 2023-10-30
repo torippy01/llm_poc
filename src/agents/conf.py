@@ -14,10 +14,8 @@ from tools.conf import ToolConfig
 from utils.utility import Self, sep_md
 
 
-
 @dataclass(frozen=True)
 class Config:
-
     agent_execution_mode: str
     agent_type: AgentType
     llm_name: str
@@ -29,17 +27,14 @@ class Config:
     md_filepath: str
     md_title: str
 
-
     def get_tools(self) -> List[BaseTool]:
         tools = [tool_conf.get_tool() for tool_conf in self.tool_confs]
         if len(tools) == 0:
             raise RuntimeError("Config error : set 'tool_confs'")
         return tools
 
-
     def get_name_of_tools(self) -> str:
         return ", ".join([tool_conf.name for tool_conf in self.tool_confs])
-
 
     def generate_md_file(self) -> MdUtils:
         md_file = MdUtils(file_name=self.md_filepath, title=self.md_title)
@@ -60,13 +55,8 @@ class Config:
         sep_md(md_file)
         return md_file
 
-
     @classmethod
-    def fetch(
-        cls,
-        toml_path: Optional[str]
-    ) -> Self:
-
+    def fetch(cls, toml_path: Optional[str]) -> Self:
         if toml_path is None:
             raise ValueError("Invalid value : toml_path")
 
@@ -90,9 +80,13 @@ class Config:
             toml_data.get("agent_type", "zero-shot-react-description")
         )
 
-        default_output_path = "eval_sentence/result/" + datetime.utcfromtimestamp(
-            int(datetime.now().timestamp())
-        ).strftime('%Y%m%d_%H%M%S') + ".yaml"
+        default_output_path = (
+            "eval_sentence/result/"
+            + datetime.utcfromtimestamp(int(datetime.now().timestamp())).strftime(
+                "%Y%m%d_%H%M%S"
+            )
+            + ".yaml"
+        )
 
         conf = Config(
             agent_execution_mode=agent_execution_mode,
@@ -102,10 +96,11 @@ class Config:
             pull=toml_data.get("pull", None),
             tool_confs=ToolConfig.fetch(toml_data.get("tools_conf", {})),
             eval_sentences_input_path=eval_sentences_input_path,
-            eval_sentences_output_path=toml_data.get("eval_output", default_output_path),
+            eval_sentences_output_path=toml_data.get(
+                "eval_output", default_output_path
+            ),
             md_filepath=toml_data.get("md_filepath", "./repo/results/test.md"),
             md_title=toml_data.get("md_title", "TEST"),
         )
 
         return conf
-

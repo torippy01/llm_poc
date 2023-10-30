@@ -8,26 +8,17 @@ from mdutils.mdutils import MdUtils
 from utils.utility import sep_md
 
 
-
 @dataclass(frozen=True)
 class ConversationLog:
-
     input: str
     output: str
-    intermediate_steps: Union[Sequence[AgentAction], Sequence[str], None] # ???
+    intermediate_steps: Union[Sequence[AgentAction], Sequence[str], None]  # ???
     chat_history: Optional[List[Union[HumanMessage, AIMessage]]]
     elapsed_time: float
 
-
-    def dump(
-        self,
-        md_file: MdUtils
-    ) -> None:
-
+    def dump(self, md_file: MdUtils) -> None:
         md_file.new_header(
-            level=2,
-            title=f"質問: {self.input}",
-            add_table_of_contents="n"
+            level=2, title=f"質問: {self.input}", add_table_of_contents="n"
         )
 
         md_file.new_line(f"実行時間: `{self.elapsed_time}`")

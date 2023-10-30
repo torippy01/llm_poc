@@ -20,21 +20,20 @@ def set_up() -> None:
 def get_gpt_response(query: str) -> str:
     return (
         ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": query}]
+            model="gpt-3.5-turbo", messages=[{"role": "user", "content": query}]
         )
         .choices[0]["message"]["content"]
         .strip()
     )
 
 
-'''
+"""
 def time_measurement(func: Callable, val: Any) -> Any:
     start = time.time()
     response = func(**val)
     elapsed_time = time.time() - start
     return response, elapsed_time
-'''
+"""
 
 
 def create_llm(llm_name: str) -> ChatOpenAI:
@@ -43,9 +42,7 @@ def create_llm(llm_name: str) -> ChatOpenAI:
 
 def create_CBmemory() -> ConversationBufferMemory:
     return ConversationBufferMemory(
-        return_messages=True,
-        memory_key="chat_history",
-        output_key="output"
+        return_messages=True, memory_key="chat_history", output_key="output"
     )
 
 
