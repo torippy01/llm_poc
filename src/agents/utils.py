@@ -7,17 +7,13 @@ from langchain.agents.output_parsers import ReActSingleInputOutputParser
 from langchain.chat_models.base import BaseChatModel
 
 
-
 # hub.pull()の結果がpromptを前提としているが、実際はその限りでない
 # TODO: hub.pullの結果を判別してagentに適用するよう修正
 
-def fetch_agent_from_hub(
-    pull,
-    llm: BaseChatModel,
-    tool_description: str,
-    tool_names: str
-) -> Any:
 
+def fetch_agent_from_hub(
+    pull, llm: BaseChatModel, tool_description: str, tool_names: str
+) -> Any:
     ## need to modify
     prompt = hub.pull(pull)
     prompt = prompt.partial(
@@ -28,9 +24,7 @@ def fetch_agent_from_hub(
     return (
         {
             "input": lambda x: x["input"],
-            "agent_scratchpad": lambda x: format_log_to_str(
-                x["intermediate_steps"]
-            ),
+            "agent_scratchpad": lambda x: format_log_to_str(x["intermediate_steps"]),
             "chat_history": lambda x: x["chat_history"],
         }
         | prompt
@@ -71,4 +65,3 @@ def agent_types_from_string(agent_type_str: str) -> AgentType:
 
     else:
         raise ValueError("Invalid value : agent_type_str")
-

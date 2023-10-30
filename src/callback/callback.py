@@ -10,16 +10,13 @@ from conv_log.conv_log import ConversationLog
 from evaluation.evaluation_sentences import EvaluateSentence
 
 
-
 class CustomCallbackHandler(BaseCallbackHandler):
-
     def __init__(self, md_file: MdUtils):
         super().__init__()
         self.user_input: Optional[str] = None
-        self.chain_start_time:float = 0
+        self.chain_start_time: float = 0
         self.md_file: MdUtils = md_file
         self.e_sentence_list: List[EvaluateSentence] = list()
-
 
     def on_chain_start(
         self,
@@ -32,26 +29,18 @@ class CustomCallbackHandler(BaseCallbackHandler):
         metadata: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> None:
-
         user_input = inputs.get("input")
 
         self.user_input = user_input
         self.chain_start_time = time()
         return
 
-
-    def on_text(
-        self,
-        text: str,
-        **kwargs: Any
-    ) -> None:
-
+    def on_text(self, text: str, **kwargs: Any) -> None:
         encoding = encoding_for_model("gpt-4")
         token_count = len(encoding.encode(text))
         if token_count > 5000:
             print(f"token count is {token_count}")
         return
-
 
     def on_chain_end(
         self,
@@ -61,7 +50,6 @@ class CustomCallbackHandler(BaseCallbackHandler):
         parent_run_id: Optional[UUID] = None,
         **kwargs: Any,
     ) -> None:
-
         output = outputs.get("output", None)
 
         if output is None:

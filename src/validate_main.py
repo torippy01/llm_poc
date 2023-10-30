@@ -14,10 +14,7 @@ python3 src/validate_main.py -tm conf/_test.toml
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--conf-toml",
-        "-tm",
-        type=str,
-        help="Please specify config TOML file."
+        "--conf-toml", "-tm", type=str, help="Please specify config TOML file."
     )
     return parser.parse_args()
 

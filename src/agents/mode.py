@@ -16,19 +16,13 @@ from typing import Optional
 """
 
 
-class AgentExecutionMode():
-
+class AgentExecutionMode:
     QA: str = "QA"
     INTERACTIVE: str = "INTERACTIVE"
     SINGLE: str = "SINGLE"
 
-
     @classmethod
-    def from_str(
-        cls,
-        string: Optional[str]
-    ) -> Optional[str]:
-
+    def from_str(cls, string: Optional[str]) -> Optional[str]:
         if string is None:
             return None
 

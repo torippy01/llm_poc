@@ -165,3 +165,6 @@ agent/
 doc/
 storage/
 aws_context/
+
+# xecretary server log
+nohup.out

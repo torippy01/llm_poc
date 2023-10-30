@@ -31,7 +31,6 @@ def get_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-
 def main() -> None:
     set_up()
 
@@ -43,7 +42,9 @@ def main() -> None:
     documents = SimpleDirectoryReader(input_dir=args.context_dir).load_data()
     logging.info("ドキュメントを取得しました．")
 
-    logging.info("ドキュメントからGPTVectorStoreIndexを使ってインデックスを取得しています．")
+    logging.info(
+        "ドキュメントからGPTVectorStoreIndexを使ってインデックスを取得しています．"
+    )
     index = GPTVectorStoreIndex.from_documents(documents)
 
     index.set_index_id(args.index_id)
