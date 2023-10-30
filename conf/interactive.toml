@@ -1,7 +1,7 @@
 llm = "gpt-4"
 user_index_dir = "user_context_index"
 agent_type = "zero-shot-react-description"
-interactive = true
+agent_execution_mode = "interactive"
 eval_sentence = "eval_sentence/test_ai_answer.yaml"
 md_filepath = "./repo/results/test.md"
 md_title = "TEST"

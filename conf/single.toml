@@ -1,10 +1,19 @@
 llm = "gpt-4"
 user_index_dir = "user_context_index"
 agent_type = "zero-shot-react-description"
-interactive = false
-eval_sentence = "eval_sentence/conflict.yaml"
-md_filepath = "./repo/results/conflict/two_tools_two_context.md"
-md_title = "two tools two contexts"
+agent_execution_mode = "single"
+eval_sentence = "eval_sentence/test_ai_answer.yaml"
+md_filepath = "./repo/results/_test.md"
+md_title = "TEST"
+
+[[tools_conf]]
+name = "shell"
+
+[[tools_conf]]
+name = "command_predictor"
+
+[[tools_conf]]
+name = "parameter_predictor"
 
 [[tools_conf]]
 name = "document_user_context_predictor"
