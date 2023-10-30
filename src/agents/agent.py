@@ -101,11 +101,9 @@ class AgentRunner:
 
 
     def run_agent_with_single_action(
-        self
+        self,
+        user_message
     ) -> Optional[str]:
-
-        print("input message to AI")
-        user_message = input()
 
         if user_message:
             response = self.agent_executor({"input": user_message})

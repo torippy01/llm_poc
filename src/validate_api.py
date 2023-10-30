@@ -1,20 +1,26 @@
+"""
+Usage :
+python src/validate_api.py -tm conf/beta.toml
+python3 src/validate_api.py -tm conf/beta.toml
+"""
+
 import argparse
+import os
+import requests
 import sys
-from typing import Dict, Optional, Union  # noqa: E402
+
+import uvicorn
+
+sys.path.append("./src/")
+
+from typing import Optional, TypedDict  # noqa: E402
 
 from fastapi import FastAPI, HTTPException  # noqa: E402
-import uvicorn
 
 from agents.agent import AgentRunner  # noqa: E402
 from agents.conf import Config
+from pydantic import BaseModel  # noqa: E402
 from utils.utility import set_up  # noqa: E402
-
-
-"""
-Usage :
-python src/validate_api.py -tm conf/_test.toml
-python3 src/validate_api.py -tm conf/_test.toml
-"""
 
 
 def get_args() -> argparse.Namespace:
@@ -28,33 +34,70 @@ def get_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-sys.path.append("./src/")
+set_up()
+conf = Config.fetch(get_args().conf_toml)
+agent_runner = AgentRunner(conf)
 app = FastAPI()
 
-set_up()
-conf = Config.fetch(get_args())
-agent_runner = AgentRunner(conf)
+
+class Request(BaseModel):
+    jobId: int
+    text: str
 
 
-def query(text: str) -> Optional[str]:
-    return agent_runner.run_agent_with_single_action(user_message=text)
+class Response(BaseModel):
+    jobId: int
+    text: str
 
 
-@app.get("/")
-def bot(
-    job_id: int,
-    text: Optional[str] = None
-) -> Dict[str, Union[int, str]]:
+class Body(TypedDict):
+    jobId: int
+    text: str
 
-    if text is None:
+
+def query(user_message: str) -> Optional[str]:
+    try:
+        answer = agent_runner.run_agent_with_single_action(
+            user_message=user_message
+        )
+        return answer
+    except:
+        return
+
+
+def sender(body: Body) -> None:
+    url = os.environ.get("SEND_MESSAGE_URL")
+    requests.post(url, json=body)
+
+
+@app.post("/")
+async def bot(request: Request) -> Response:
+    if request.text is None:
         raise HTTPException(status_code=400, detail="質問文が見当たりませんでした")
 
-    answer = query(text)
-    if not answer:
-        raise HTTPException(status_code=500, detail="エージェントが回答できませんでした")
+    answer = query(request.text)
 
-    return {"job_id": job_id, "answer": answer}
+    if not answer:
+        fail_message = "エージェントが回答できませんでした"
+        body: Body = {
+            "jobId": request.jobId,
+            "text": fail_message
+        }
+        sender(body)
+
+        raise HTTPException(status_code=500, detail=fail_message)
+
+    body: Body = {
+        "jobId": request.jobId,
+        "text": answer
+    }
+
+    sender(body)
+
+    return Response(jobId=request.jobId, text=answer)
 
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", port=3999, reload=True)
+    host = os.environ.get("XECRETARY_SV_HOST")
+    port = int(os.environ.get("XECRETARY_SV_PORT"))
+    uvicorn.run("validate_api:app", port=port, reload=True, host=host)

@@ -2,7 +2,7 @@ from typing import Dict, List, Optional
 
 from langchain.tools import BaseTool
 
-# from tools.tool_aws import CommandPredictorTool, ParameterPredictorTool
+from tools.tool_aws import CommandPredictorTool, ParameterPredictorTool
 from tools.tool_human import create_HumanTool
 from tools.tool_shell import ShellAndSummarizeTool
 from tools.tool_uc_predictor import create_user_context_predictor_tool
@@ -20,11 +20,11 @@ class ToolConfig:
 
 
     def get_tool(self) -> BaseTool:
-        # if self.name == "command_predictor":
-            # return CommandPredictorTool()
-        # elif self.name == "parameter_predictor":
-            # return ParameterPredictorTool()
-        if self.name == "shell":
+        if self.name == "command_predictor":
+            return CommandPredictorTool()
+        elif self.name == "parameter_predictor":
+            return ParameterPredictorTool()
+        elif self.name == "shell":
             return ShellAndSummarizeTool()
         elif self.name == "human":
             return create_HumanTool()

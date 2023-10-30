@@ -44,7 +44,7 @@ def create_user_context_predictor_tool(
     query_engine = get_query_engine(index_dir, llm)
 
     class UserContextPredictorTool(BaseTool):
-        name: str = name
+        name: str = f"user_context_from_{data_source}"
         description: str = f"""
         ユーザーしか知らない知識を{data_source}から取得するツール
         """
