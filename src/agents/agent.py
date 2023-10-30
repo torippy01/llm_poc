@@ -12,14 +12,8 @@ from evaluation.evaluation_sentences import EvaluateSentence
 from utils.utility import create_CBmemory, create_llm
 
 
-
 class AgentRunner:
-
-    def __init__(
-        self,
-        conf: Config
-    ):
-
+    def __init__(self, conf: Config):
         self.handler = CustomCallbackHandler(conf.generate_md_file())
 
         tools = conf.get_tools()
@@ -32,11 +26,11 @@ class AgentRunner:
                     pull=conf.pull,
                     llm=llm,
                     tool_description=render_text_description(tools),
-                    tool_names=conf.get_name_of_tools()
+                    tool_names=conf.get_name_of_tools(),
                 ),
                 tools=tools,
                 memory=memory,
-                callback_manager=BaseCallbackManager([self.handler])
+                callback_manager=BaseCallbackManager([self.handler]),
             )
 
         else:
@@ -48,13 +42,12 @@ class AgentRunner:
                 return_intermediate_steps=(
                     conf.agent_type != "conversational-react-description"
                 ),
-                callback_manager=BaseCallbackManager([self.handler])
+                callback_manager=BaseCallbackManager([self.handler]),
             )
 
         self.eval_sentences_input_path = conf.eval_sentences_input_path
         self.eval_sentences_output_path = conf.eval_sentences_output_path
         self.agent_execution_mode = conf.agent_execution_mode
-
 
     def run(self) -> None:
         if self.agent_execution_mode == AgentExecutionMode.INTERACTIVE:
@@ -73,13 +66,11 @@ class AgentRunner:
 
         if self.eval_sentences_output_path:
             EvaluateSentence.from_list_to_yaml(
-                self.handler.e_sentence_list,
-                self.eval_sentences_output_path
+                self.handler.e_sentence_list, self.eval_sentences_output_path
             )
 
         self.handler.md_file.create_md_file()
         return
-
 
     def run_agent_with_interactive(self) -> None:
         while True:
@@ -92,19 +83,15 @@ class AgentRunner:
             self.agent_executor({"input": user_message})
         return
 
-
     def run_agent_with_Q_and_A(self) -> None:
-        e_sentence_list = EvaluateSentence.from_yaml_to_list(self.eval_sentences_input_path)
+        e_sentence_list = EvaluateSentence.from_yaml_to_list(
+            self.eval_sentences_input_path
+        )
         for e_sentence in e_sentence_list:
             self.agent_executor({"input": e_sentence.input})
         return
 
-
-    def run_agent_with_single_action(
-        self,
-        user_message
-    ) -> Optional[str]:
-
+    def run_agent_with_single_action(self, user_message) -> Optional[str]:
         if user_message:
             response = self.agent_executor({"input": user_message})
             return response.get("output", None)
@@ -113,6 +100,8 @@ class AgentRunner:
             if self.eval_sentences_input_path is None:
                 raise ValueError("Invalid value : eval_sentences_input_path")
 
-            e_sentence = EvaluateSentence.from_yaml_to_list(self.eval_sentences_input_path)[0]
+            e_sentence = EvaluateSentence.from_yaml_to_list(
+                self.eval_sentences_input_path
+            )[0]
             self.agent_executor({"input": e_sentence.input})
             return

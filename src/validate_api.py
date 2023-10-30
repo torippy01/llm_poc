@@ -26,10 +26,7 @@ from utils.utility import set_up  # noqa: E402
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--conf-toml",
-        "-tm",
-        type=str,
-        help="Please specify config TOML file."
+        "--conf-toml", "-tm", type=str, help="Please specify config TOML file."
     )
     return parser.parse_args()
 
@@ -57,9 +54,7 @@ class Body(TypedDict):
 
 def query(user_message: str) -> Optional[str]:
     try:
-        answer = agent_runner.run_agent_with_single_action(
-            user_message=user_message
-        )
+        answer = agent_runner.run_agent_with_single_action(user_message=user_message)
         return answer
     except:
         return
@@ -79,18 +74,12 @@ async def bot(request: Request) -> Response:
 
     if not answer:
         fail_message = "エージェントが回答できませんでした"
-        body: Body = {
-            "jobId": request.jobId,
-            "text": fail_message
-        }
+        body: Body = {"jobId": request.jobId, "text": fail_message}
         sender(body)
 
         raise HTTPException(status_code=500, detail=fail_message)
 
-    body: Body = {
-        "jobId": request.jobId,
-        "text": answer
-    }
+    body: Body = {"jobId": request.jobId, "text": answer}
 
     sender(body)
 

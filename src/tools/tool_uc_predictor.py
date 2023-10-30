@@ -4,14 +4,14 @@ from typing import Optional
 
 from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
-    CallbackManagerForToolRun
+    CallbackManagerForToolRun,
 )
 from langchain.tools import BaseTool
 from llama_index import (
     LLMPredictor,
     ServiceContext,
     StorageContext,
-    load_index_from_storage
+    load_index_from_storage,
 )
 from llama_index.indices.query.base import BaseQueryEngine
 from llama_index.llms.utils import LLMType
@@ -32,9 +32,8 @@ def create_user_context_predictor_tool(
     name: str,
     index_dir: Optional[str],
     data_source: Optional[str],
-    llm_name: Optional[str]
+    llm_name: Optional[str],
 ) -> BaseTool:
-
     if not (llm_name and index_dir):
         raise ValueError(
             f"Config error : set 'llm_name' and 'index_dir' for tool {name}"
