@@ -42,6 +42,9 @@ class ParameterPredictorTool(BaseTool):
     name: str = "parameter_predictor"
     description: str = f"""
         バージョン{get_aws_cli_version()}のAWS CLIコマンドの引数を取得するツール
+        またこのツールは、出力結果の文字数が膨大であることが予測されるならば、
+        フィルタまたは`jq`コマンド、`grep`コマンドを積極的に用いて、
+        必要な情報のみ抽出するコマンドに整形する。
     """
 
     def _run(
