@@ -17,7 +17,9 @@ app = FastAPI()
 
 
 class Request(BaseModel):
-    text: str
+    action: str
+    title: str
+    url: str
 
 
 @app.post("/github-wiki")
