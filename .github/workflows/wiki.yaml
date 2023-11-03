@@ -11,7 +11,7 @@ jobs:
       - name: contextObserver
         run: |
           curl -X POST -H "Content-type: application/json" \
-            --data "{\"text\": \"Wiki ${ACTION}: ${TITLE}\n${URL}\"}" \
+            --data "{'action': '${ACTION}', 'title': ${TITLE}, 'url': ${URL}}" \
             ${CONTENT_OBSERVER_URL}
         env:
           ACTION: ${{ github.event.pages[0].action }}
