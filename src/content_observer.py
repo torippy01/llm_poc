@@ -10,6 +10,7 @@ import uvicorn
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from pydantic import BaseModel  # noqa: E402
+from fastapi import FastAPI, HTTPException
 
 
 load_dotenv()
@@ -18,12 +19,18 @@ app = FastAPI()
 
 class Request(BaseModel):
     action: str
-    title: str
+    repo: str
     url: str
 
 
 @app.post("/github-wiki")
 async def github_wiki(request: Request):
+    if request.action not in ["created", "edited", "deleted"]:
+        raise HTTPException(
+            status_code=500,
+            detail="Unexpected error is occured on github page update."
+        )
+
     print(request)
     return request
 

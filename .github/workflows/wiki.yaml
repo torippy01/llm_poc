@@ -11,7 +11,7 @@ jobs:
       - name: contextObserver
         run: |
           curl -X POST -H "Content-type: application/json" \
-            --data "{\"action\": \"${ACTION}\", \"title\": \"${TITLE}\", \"url\": \"${URL}\"}" \
+            --data "{\"action\": \"${ACTION}\", \"repo\": \"${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}\", \"url\": \"${URL}\"}" \
             ${CONTENT_OBSERVER_URL}
         env:
           ACTION: ${{ github.event.pages[0].action }}
