@@ -91,7 +91,7 @@ class AgentRunner:
             self.agent_executor({"input": e_sentence.input})
         return
 
-    def run_agent_with_single_action(self, user_message) -> Optional[str]:
+    def run_agent_with_single_action(self, user_message=None) -> Optional[str]:
         if user_message:
             response = self.agent_executor({"input": user_message})
             return response.get("output", None)
