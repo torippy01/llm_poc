@@ -17,7 +17,6 @@ app = FastAPI()
 
 
 class Request(BaseModel):
-    jobId: int
     text: str
 
 
@@ -25,6 +24,12 @@ class Request(BaseModel):
 async def github_wiki(request: Request):
     print(request)
     return request
+
+
+# Use for AWS Target Group health check
+@app.get("/health")
+async def health():
+    return
 
 
 if __name__ == "__main__":
