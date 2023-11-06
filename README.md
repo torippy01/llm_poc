@@ -31,7 +31,7 @@
 1. 任意のディレクトリにドキュメントを置く
 2. インデックスファイルを作成
     ```bash
-    python src/validate_ci.py \
+    python src/validate_index.py \
       --index-id user_context_index \
       --context-dir user_context/context
     ```
@@ -56,7 +56,7 @@
 
 ## エージェント実行
 ```bash
-python src/validate.py --conf-toml conf/test.toml
+python src/validate_main.py --conf-toml conf/test.toml
 ```
 
 ## β版サーバー
