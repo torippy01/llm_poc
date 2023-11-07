@@ -4,15 +4,14 @@ python src/context_observer.py
 """
 
 import os
-import re
 import uvicorn
 
 from context_fetcher.github_wiki import GithubWiki
+from utils.utility import host_validation, port_validation
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Optional
 
 load_dotenv()
 app = FastAPI()
@@ -41,23 +40,6 @@ async def health():
     return
 
 
-def host_validation(host: Optional[str]):
-    # hostが文字列であればTrue
-    # TODO: 文字列の内容を加味すべき
-    if not host:
-        return False
-    elif isinstance(host, str):
-        return True
-
-
-def port_validation(port: Optional[str]):
-    # portが半角数字文字列であればTrue
-    # それ以外はFalse
-    if not port:
-        return False
-    return True if re.fullmatch("[0-9]+", port) else False
-
-
 if __name__ == "__main__":
     # CONTENT_OBSERVER_SV_HOSTから値が取れない場合は`localhost`
     _host = os.environ.get("CONTENT_OBSERVER_SV_HOST")
@@ -66,4 +48,4 @@ if __name__ == "__main__":
     # CONTENT_OBSERVER_SV_PORTから値が取れない場合は`3010`
     _port = os.environ.get("CONTENT_OBSERVER_SV_PORT")
     port = int(_port) if port_validation(_port) else 3010  # type: ignore
-    uvicorn.run("content_observer:app", port=port, reload=True, host=host)  # type: ignore
+    uvicorn.run("context_observer:app", port=port, reload=True, host=host)  # type: ignore

@@ -1,6 +1,8 @@
-from typing import TypeVar
-
 import langchain
+import re
+
+from typing import TypeVar, Optional
+
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
@@ -50,3 +52,20 @@ def sep_md(mdFile: MdUtils) -> None:
     mdFile.new_line()
     mdFile.new_line("---")
     mdFile.new_line()
+
+
+def host_validation(host: Optional[str]):
+    # hostが文字列であればTrue
+    # TODO: 文字列の内容を加味すべき
+    if not host:
+        return False
+    elif isinstance(host, str):
+        return True
+
+
+def port_validation(port: Optional[str]):
+    # portが半角数字文字列であればTrue
+    # それ以外はFalse
+    if not port:
+        return False
+    return True if re.fullmatch("[0-9]+", port) else False
