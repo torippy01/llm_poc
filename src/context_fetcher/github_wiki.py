@@ -1,5 +1,5 @@
 import shutil
-from git import Repo
+from git.repo import Repo
 
 from llama_index import SimpleDirectoryReader, GPTVectorStoreIndex
 
