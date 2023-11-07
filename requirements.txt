@@ -1,14 +1,21 @@
+# 自然言語処理系
 langchain==0.0.310
 langchain-experimental==0.0.33
 langchainhub==0.1.13
 llama-index==0.8.19
 llama-hub==0.0.26
 openai==0.28.0
+
+# formatter, linter系
 ruff==0.0.287
 pre-commit==3.5.0
-argparse
-mdutils==1.6.0
-toml==0.10.2
+
+# server系
 fastapi==0.104.0
 uvicorn[standard]==0.23.2
 GitPython==3.1.34
+
+# その他
+argparse
+mdutils==1.6.0
+toml==0.10.2
