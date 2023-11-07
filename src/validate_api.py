@@ -20,7 +20,7 @@ from fastapi import FastAPI, HTTPException  # noqa: E402
 from agents.agent import AgentRunner  # noqa: E402
 from agents.conf import Config
 from pydantic import BaseModel  # noqa: E402
-from utils.utility import set_up  # noqa: E402
+from utils.utility import set_up, host_validation, port_validation  # noqa: E402
 
 
 def get_args() -> argparse.Namespace:
@@ -87,6 +87,11 @@ async def bot(request: Request) -> Response:
 
 
 if __name__ == "__main__":
-    host = os.environ.get("XECRETARY_SV_HOST")
-    port = int(os.environ.get("XECRETARY_SV_PORT"))
-    uvicorn.run("validate_api:app", port=port, reload=True, host=host)
+    # CONTENT_OBSERVER_SV_HOSTから値が取れない場合は`localhost`
+    _host = os.environ.get("XECRETARY_SV_HOST")
+    host = _host if host_validation(_host) else "localhost"
+
+    # CONTENT_OBSERVER_SV_PORTから値が取れない場合は`3010`
+    _port = os.environ.get("XECRETARY_SV_PORT")
+    port = int(_port) if port_validation(_port) else 3999  # type: ignore
+    uvicorn.run("validate_api:app", port=port, reload=True, host=host)  # type: ignore

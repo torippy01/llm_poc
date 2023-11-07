@@ -16,13 +16,7 @@ name = "command_predictor"
 name = "parameter_predictor"
 
 [[tools_conf]]
-name = "document_user_context_predictor"
-index_dir = "conflict_doc"
-data_source = "document"
-llm = "gpt-4"
-
-[[tools_conf]]
-name = "chat_user_context_predictor"
-index_dir = "correct_chat"
-data_source = "chat"
-llm = "gpt-4"
+name = "user_context_github_wiki"
+index_dir = "torippy01.llm_poc"
+data_source = "github wiki"
+llm = "gpt-3.5-turbo"

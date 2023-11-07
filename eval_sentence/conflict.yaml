@@ -1,4 +1,0 @@
-- evaluation: null
-  human_answer: null
-  input: 本番運用のEC2インスタンスIDを教えてください。
-  output: 本番運用のEC2インスタンスIDは`i-06546b48ff962f46e`です。

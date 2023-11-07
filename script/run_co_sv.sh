@@ -1,1 +1,1 @@
-python src/content_observer.py
+nohup python src/context_observer.py &
