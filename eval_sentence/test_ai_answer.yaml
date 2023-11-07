@@ -2,7 +2,3 @@
   human_answer: null
   input: プロジェクト名は何ですか？
   output: プロジェクト名は「AI秘書（仮名）プロジェクト」です。
-- evaluation: null
-  human_answer: null
-  input: エンジニアの稼働人数は何人ですか？
-  output: エンジニアの稼働人数は5人です。
