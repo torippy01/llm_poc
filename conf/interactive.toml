@@ -19,7 +19,7 @@ name = "shell"
 name = "human"
 
 [[tools_conf]]
-name = "user_context_predictor"
-index_dir = "user_context_index"
-data_source = "document"
+name = "user_context_github_wiki"
+index_dir = "torippy01.llm_poc"
+data_source = "github wiki"
 llm = "gpt-3.5-turbo"
