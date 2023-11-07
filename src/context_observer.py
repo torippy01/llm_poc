@@ -1,18 +1,17 @@
 """
 Usage :
-python src/validate_api.py -tm conf/beta.toml
-python3 src/validate_api.py -tm conf/beta.toml
+python src/context_observer.py
 """
 
 import os
 import re
 import uvicorn
 
-from fastapi import FastAPI
-from dotenv import load_dotenv
-from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException
 from context_fetcher.github_wiki import GithubWiki
+
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from typing import Optional
 
 load_dotenv()
