@@ -71,7 +71,7 @@ class Config:
             raise ValueError("Config error : set 'agent_execution_mode'")
 
         eval_sentences_input_path = None
-        if agent_execution_mode == AgentExecutionMode.QA:
+        if agent_execution_mode in (AgentExecutionMode.QA, AgentExecutionMode.SINGLE):
             eval_sentences_input_path = toml_data.get("eval_sentence", None)
             if eval_sentences_input_path is None:
                 raise ValueError("Config error : set 'eval_sentence'")
