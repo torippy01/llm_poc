@@ -33,7 +33,6 @@ def get_args() -> argparse.Namespace:
 
 set_up()
 conf = Config.fetch(get_args().conf_toml)
-agent_runner = AgentRunner(conf)
 app = FastAPI()
 
 
@@ -53,6 +52,7 @@ class Body(TypedDict):
 
 
 def query(user_message: str) -> Optional[str]:
+    agent_runner = AgentRunner(conf)
     try:
         answer = agent_runner.run_agent_with_single_action(user_message=user_message)
         return answer
