@@ -17,9 +17,12 @@
   .envファイルに以下の記述を追加
   ```
   OPENAI_API_KEY=<openaiのAPIキー>
+  GITHUB_TOKEN=<github token>
   XECRETARY_SV_HOST=<チャットボットサーバーのIP>
   XECRETARY_SV_PORT=<チャットボットサーバーのPORT>
   SEND_MESSAGE_URL=<チャットレイヤーサーバのエンドポイントURL>
+  CONTEXT_OBSERVER_SV_HOST=<host名>
+  CONTEXT_OBSERVER_SV_PORT=<port番号>
   ```
 
 * 外部パッケージのインストール
