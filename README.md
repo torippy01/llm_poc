@@ -55,7 +55,7 @@
 
 ## エージェント実行
 ```bash
-python src/validate_main.py --conf-toml conf/test.toml
+python src/validate_main.py --conf-toml conf/interactive.toml
 ```
 
 ## β版サーバー
