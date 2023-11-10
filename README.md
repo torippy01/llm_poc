@@ -17,9 +17,12 @@
   .envファイルに以下の記述を追加
   ```
   OPENAI_API_KEY=<openaiのAPIキー>
+  GITHUB_TOKEN=<github token>
   XECRETARY_SV_HOST=<チャットボットサーバーのIP>
   XECRETARY_SV_PORT=<チャットボットサーバーのPORT>
   SEND_MESSAGE_URL=<チャットレイヤーサーバのエンドポイントURL>
+  CONTEXT_OBSERVER_SV_HOST=<host名>
+  CONTEXT_OBSERVER_SV_PORT=<port番号>
   ```
 
 * 外部パッケージのインストール
@@ -41,22 +44,18 @@
 1. 任意のディレクトリにyamlファイルを作成
 2. yamlファイルに下記を記述
     ```yaml
-    - evaluation: null
-      human_answer: null
-      input: <AIへの質問>
-      output: null
+    - evaluation: null # 評価値
+      human_answer: null # 人間による評価文
+      input: <AIへの質問> # AIへの質問
+      output: null # AIの回答
     ```
-    - `evaluation`: 評価値
-    - `human_answer`: 人間による評価文
-    - `input`: AIへの質問
-    - `output`: AIの回答
 
 ## 設定ファイルの作成
 - [リンク参照](./how_to_config.md)
 
 ## エージェント実行
 ```bash
-python src/validate_main.py --conf-toml conf/test.toml
+python src/validate_main.py --conf-toml conf/interactive.toml
 ```
 
 ## β版サーバー
