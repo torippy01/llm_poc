@@ -44,15 +44,11 @@
 1. 任意のディレクトリにyamlファイルを作成
 2. yamlファイルに下記を記述
     ```yaml
-    - evaluation: null
-      human_answer: null
-      input: <AIへの質問>
-      output: null
+    - evaluation: null # 評価値
+      human_answer: null # 人間による評価文
+      input: <AIへの質問> # AIへの質問
+      output: null # AIの回答
     ```
-    - `evaluation`: 評価値
-    - `human_answer`: 人間による評価文
-    - `input`: AIへの質問
-    - `output`: AIの回答
 
 ## 設定ファイルの作成
 - [リンク参照](./how_to_config.md)
