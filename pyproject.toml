@@ -1,3 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "xecretary_core"
+dynamic = ["version"]
+authors = [{name="torippy01"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "langchain==0.0.310",
+    "langchain-experimental==0.0.33",
+    "langchainhub==0.1.13",
+    "llama-index==0.8.19",
+    "llama-hub==0.0.26",
+    "openai==0.28.0",
+    "fastapi==0.104.0",
+    "uvicorn[standard]==0.23.2",
+    "GitPython==3.1.34",
+    "argparse",
+    "mdutils==1.6.0",
+    "toml==0.10.2",
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[tool.hatch.version]
+path = "src/xecretary_core/__about__.py"
+
 [tool.ruff]
 target-version = "py39"
 line-length = 88
