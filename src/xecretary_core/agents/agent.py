@@ -1,3 +1,5 @@
+import os
+from datetime import datetime
 from typing import Optional
 
 from langchain.agents import AgentExecutor, initialize_agent
@@ -46,7 +48,7 @@ class AgentRunner:
             )
 
         self.eval_sentences_input_path = conf.eval_sentences_input_path
-        self.eval_sentences_output_path = conf.eval_sentences_output_path
+        self.eval_output_dir = conf.eval_output_dir
         self.agent_execution_mode = conf.agent_execution_mode
 
     def run(self) -> None:
@@ -64,10 +66,17 @@ class AgentRunner:
                 f"Invalid value : agent_execution_mode = {self.agent_execution_mode}"
             )
 
-        if self.eval_sentences_output_path:
-            EvaluateSentence.from_list_to_yaml(
-                self.handler.e_sentence_list, self.eval_sentences_output_path
+        eval_output_path = os.path.join(
+            self.eval_output_dir,
+            datetime.utcfromtimestamp(int(datetime.now().timestamp())).strftime(
+                "%Y%m%d_%H%M%S"
             )
+            + ".yaml",
+        )
+
+        EvaluateSentence.from_list_to_yaml(
+            self.handler.e_sentence_list, eval_output_path
+        )
 
         self.handler.md_file.create_md_file()
         return

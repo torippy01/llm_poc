@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
 from typing import List, Optional
 
 import toml
@@ -23,7 +22,7 @@ class Config:
     pull: str
     tool_confs: List[ToolConfig]
     eval_sentences_input_path: Optional[str]
-    eval_sentences_output_path: str
+    eval_output_dir: str
     md_filepath: str
     md_title: str
 
@@ -80,13 +79,7 @@ class Config:
             toml_data.get("agent_type", "zero-shot-react-description")
         )
 
-        default_output_path = (
-            "eval_sentence/result/"
-            + datetime.utcfromtimestamp(int(datetime.now().timestamp())).strftime(
-                "%Y%m%d_%H%M%S"
-            )
-            + ".yaml"
-        )
+        eval_output_dir = toml_data.get("eval_output", "var/eval_sentence/result/")
 
         conf = Config(
             agent_execution_mode=agent_execution_mode,
@@ -96,9 +89,7 @@ class Config:
             pull=toml_data.get("pull", None),
             tool_confs=ToolConfig.fetch(toml_data.get("tools_conf", {})),
             eval_sentences_input_path=eval_sentences_input_path,
-            eval_sentences_output_path=toml_data.get(
-                "eval_output", default_output_path
-            ),
+            eval_output_dir=eval_output_dir,
             md_filepath=toml_data.get("md_filepath", "./repo/results/test.md"),
             md_title=toml_data.get("md_title", "TEST"),
         )
