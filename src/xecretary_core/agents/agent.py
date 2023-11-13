@@ -4,12 +4,12 @@ from langchain.agents import AgentExecutor, initialize_agent
 from langchain.callbacks.base import BaseCallbackManager
 from langchain.tools.render import render_text_description
 
-from agents.conf import Config
-from agents.mode import AgentExecutionMode
-from agents.utils import fetch_agent_from_hub
-from callback.callback import CustomCallbackHandler
-from evaluation.evaluation_sentences import EvaluateSentence
-from utils.utility import create_CBmemory, create_llm
+from xecretary_core.agents.conf import Config
+from xecretary_core.agents.mode import AgentExecutionMode
+from xecretary_core.agents.utils import fetch_agent_from_hub
+from xecretary_core.callback.callback import CustomCallbackHandler
+from xecretary_core.evaluation.evaluation_sentences import EvaluateSentence
+from xecretary_core.utils.utility import create_CBmemory, create_llm
 
 
 class AgentRunner:

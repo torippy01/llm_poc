@@ -5,7 +5,7 @@ from langchain.schema import AgentAction, AIMessage, HumanMessage
 from llama_index.response.schema import Response
 from mdutils.mdutils import MdUtils
 
-from utils.utility import sep_md
+from xecretary_core.utils.utility import sep_md
 
 
 @dataclass(frozen=True)

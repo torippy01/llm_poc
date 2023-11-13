@@ -17,10 +17,10 @@ from typing import Optional, TypedDict  # noqa: E402
 
 from fastapi import FastAPI, HTTPException  # noqa: E402
 
-from agents.agent import AgentRunner  # noqa: E402
-from agents.conf import Config
 from pydantic import BaseModel  # noqa: E402
-from utils.utility import set_up, host_validation, port_validation  # noqa: E402
+from xecretary_core.agents.agent import AgentRunner  # noqa: E402
+from xecretary_core.agents.conf import Config
+from xecretary_core.utils.utility import set_up, host_validation, port_validation  # noqa: E402
 
 
 def get_args() -> argparse.Namespace:

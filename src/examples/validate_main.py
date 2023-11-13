@@ -1,8 +1,8 @@
 import argparse
 
-from agents.agent import AgentRunner
-from agents.conf import Config
-from utils.utility import set_up
+from xecretary_core.agents.agent import AgentRunner
+from xecretary_core.agents.conf import Config
+from xecretary_core.utils.utility import set_up
 
 """
 Usage :

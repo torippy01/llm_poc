@@ -6,8 +6,8 @@ python src/context_observer.py
 import os
 import uvicorn
 
-from context_fetcher.github_wiki import GithubWiki
-from utils.utility import host_validation, port_validation
+from xecretary_core.context_fetcher.github_wiki import GithubWiki
+from xecretary_core.utils.utility import host_validation, port_validation
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -25,6 +25,7 @@ class Request(BaseModel):
 
 @app.post("/github-wiki")
 async def github_wiki(request: Request):
+    # TODO: deletedを受け取ることはないため削除
     if request.action not in ["created", "edited", "deleted"]:
         raise HTTPException(
             status_code=500, detail="Unexpected error is occured on github page update."

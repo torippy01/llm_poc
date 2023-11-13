@@ -8,7 +8,7 @@ from langchain.callbacks.manager import (
 )
 from langchain.tools import BaseTool
 
-from utils.utility import get_gpt_response
+from xecretary_core.utils.utility import get_gpt_response
 
 
 def get_aws_cli_version() -> str:

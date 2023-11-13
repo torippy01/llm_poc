@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 
 import yaml
 
-from utils.utility import Self, get_gpt_response
+from xecretary_core.utils.utility import Self, get_gpt_response
 
 
 @dataclass

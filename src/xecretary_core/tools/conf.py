@@ -2,11 +2,11 @@ from typing import Dict, List, Optional
 
 from langchain.tools import BaseTool
 
-from tools.tool_aws import CommandPredictorTool, ParameterPredictorTool
-from tools.tool_human import create_HumanTool
-from tools.tool_shell import ShellAndSummarizeTool
-from tools.tool_uc_predictor import create_user_context_predictor_tool
-from utils.utility import Self
+from xecretary_core.tools.tool_aws import CommandPredictorTool, ParameterPredictorTool
+from xecretary_core.tools.tool_human import create_HumanTool
+from xecretary_core.tools.tool_shell import ShellAndSummarizeTool
+from xecretary_core.tools.tool_uc_predictor import create_user_context_predictor_tool
+from xecretary_core.utils.utility import Self
 
 
 class ToolConfig:

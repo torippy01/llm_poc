@@ -16,7 +16,7 @@ from llama_index import (
 from llama_index.indices.query.base import BaseQueryEngine
 from llama_index.llms.utils import LLMType
 
-from utils.utility import create_llm
+from xecretary_core.utils.utility import create_llm
 
 
 def get_query_engine(index_dir: str, llm: Optional[LLMType]) -> BaseQueryEngine:

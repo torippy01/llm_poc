@@ -8,10 +8,10 @@ from langchain.agents.agent_types import AgentType
 from langchain.tools import BaseTool
 from mdutils.mdutils import MdUtils
 
-from agents.mode import AgentExecutionMode
-from agents.utils import agent_types_from_string
-from tools.conf import ToolConfig
-from utils.utility import Self, sep_md
+from xecretary_core.agents.mode import AgentExecutionMode
+from xecretary_core.agents.utils import agent_types_from_string
+from xecretary_core.tools.conf import ToolConfig
+from xecretary_core.utils.utility import Self, sep_md
 
 
 @dataclass(frozen=True)

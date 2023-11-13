@@ -3,7 +3,7 @@ import logging
 
 from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
 
-from utils.utility import set_up
+from xecretary_core.utils.utility import set_up
 
 """
 Usage :

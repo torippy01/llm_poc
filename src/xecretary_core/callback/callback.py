@@ -6,8 +6,8 @@ from langchain.callbacks.base import BaseCallbackHandler
 from mdutils.mdutils import MdUtils
 from tiktoken import encoding_for_model
 
-from conv_log.conv_log import ConversationLog
-from evaluation.evaluation_sentences import EvaluateSentence
+from xecretary_core.conv_log.conv_log import ConversationLog
+from xecretary_core.evaluation.evaluation_sentences import EvaluateSentence
 
 
 class CustomCallbackHandler(BaseCallbackHandler):
