@@ -5,7 +5,10 @@
 ## 環境整備
 * pythonライブラリのインストール
 
-  `pip install -r requirements.txt`
+  ```bash
+  pip install -r requirements.txt
+  pip install -e .
+  ```
 
 * pre-commitのインストール
 
@@ -34,7 +37,7 @@
 1. 任意のディレクトリにドキュメントを置く
 2. インデックスファイルを作成
     ```bash
-    python src/validate_index.py \
+    python src/examples/validate_index.py \
       --index-id user_context_index \
       --context-dir user_context/context
     ```
@@ -55,7 +58,7 @@
 
 ## エージェント実行
 ```bash
-python src/validate_main.py --conf-toml conf/interactive.toml
+python src/examples/validate_main.py --conf-toml conf/test.toml
 ```
 
 ## β版サーバー
@@ -68,11 +71,3 @@ python src/validate_main.py --conf-toml conf/interactive.toml
 ```bash
 . script/stop_beta_sv.sh
 ```
-
-## 検証レポート
-* ✅ [文量がインデックス化に与える影響の検証](./repo/report_doc_num.md)
-* ✅ [コンテキストなしの自然言語からAWS CLIのコマンドを実行させる検証](./repo/report_exec_command_contextless.md)
-* ✅ [コンテキストつきの自然言語からAWS CLIのコマンドを実行させる検証](./repo/report_exec_command_context.md)
-* ✅ [コンテキストなしの質問をコンテキストを考慮するエージェントにしてみた](./repo/report_contextless_request_with_usercontext.md)
-* ✅ [対話方法を網羅的に調査](./repo/report_conversational_pickup.md)
-* ✅ [対話的エージェントの検証](./repo/report_conversational.md)
