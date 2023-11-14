@@ -36,3 +36,9 @@ path = "src/xecretary_core/__about__.py"
 target-version = "py39"
 line-length = 88
 ignore = ["E722"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src/xecretary_core --cov-branch -s -v"
+testpaths = [
+    "src/xecretary/tests"
+]
