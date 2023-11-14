@@ -38,7 +38,7 @@ line-length = 88
 ignore = ["E722"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=src/xecretary_core --cov-branch -s -v"
+addopts = "--cov=src/xecretary_core/agents -vv"
 testpaths = [
     "src/xecretary/tests"
 ]
