@@ -36,6 +36,7 @@ class Config:
         return ", ".join([tool_conf.name for tool_conf in self.tool_confs])
 
     def generate_md_file(self) -> MdUtils:
+        # TODO: markdownファイルを生成していないので、関数名を変更すべき
         md_file = MdUtils(file_name=self.md_filepath, title=self.md_title)
 
         md_file.new_line()
@@ -57,7 +58,7 @@ class Config:
     @classmethod
     def fetch(cls, toml_path: Optional[str]) -> Self:
         if toml_path is None:
-            raise ValueError("Invalid value : toml_path")
+            raise ValueError("Invalid value : 'toml_path'")
 
         with open(toml_path, "r") as f:
             toml_data = toml.load(f)
