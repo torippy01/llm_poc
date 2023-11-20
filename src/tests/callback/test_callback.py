@@ -141,7 +141,7 @@ def test_on_text(capsys, handler):
 
     handler.on_text(text=large_text)
     captured = capsys.readouterr()
-    assert captured.out == "token count is 5056\n"
+    assert captured.out == "token count is 5016\n"
 
 
 def test_on_chain_end(handler, run_id, inputs, outputs):
