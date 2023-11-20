@@ -12,7 +12,7 @@ from xecretary_core.utils.utility import sep_md
 class ConversationLog:
     input: str
     output: str
-    intermediate_steps: Union[Sequence[AgentAction], Sequence[str], None]  # ???
+    intermediate_steps: Union[Sequence[AgentAction], Sequence[str], None]
     chat_history: Optional[List[Union[HumanMessage, AIMessage]]]
     elapsed_time: float
 
@@ -37,6 +37,9 @@ class ConversationLog:
                 md_file.insert_code(answer, language="bash")
                 sep_md(md_file)
 
+        # We are not currently using chat_history as interactive utilization
+        # is not assumed at present.
+        """
         elif self.chat_history:
             for chat in self.chat_history:
                 if isinstance(chat, HumanMessage):
@@ -47,4 +50,4 @@ class ConversationLog:
         md_file.new_line("final answer:")
         md_file.insert_code(self.output, language="bash")
         md_file.new_line()
-        return
+        """
