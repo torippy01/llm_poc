@@ -50,6 +50,18 @@ class EvaluateSentence:
 
     @classmethod
     def from_yaml_to_list(self, yaml_filepath: Optional[str]) -> List[Self]:
+        """
+        以下のリストデータに変換
+        [
+            {
+                "input": <人間の入力>,
+                "output": <エージェントの最終出力>,
+                "human_answer": <人間が用意した模範解答>,
+                "evaluation": <outputの評価値>
+            }, {...}
+        ]
+        """
+
         if yaml_filepath is None:
             raise ValueError("Invalid value : yaml_filepath")
         with open(yaml_filepath) as f:
@@ -64,18 +76,6 @@ class EvaluateSentence:
     def from_list_to_yaml(
         self, e_sentences_list: List[Self], yaml_filepath: str
     ) -> None:
-        """
-        以下のリストデータに変換
-        [
-            {
-                "input": <人間の入力>,
-                "output": <エージェントの最終出力>,
-                "human_answer": <人間が用意した模範解答>,
-                "evaluation": <outputの評価値>
-            }, {...}
-        ]
-        """
-
         dict_list = list()
         for e_sentences in e_sentences_list:
             dict_list.append(e_sentences.to_dict())
