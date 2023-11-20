@@ -40,34 +40,11 @@ def test_dump(conv_log_prop):
             self.md_file = md_file
 
     md_file_instance = Mdfile(MdUtils("test.md"))
-
     conv_log = ConversationLog(**conv_log_prop)
     conv_log.dump(md_file_instance.md_file)
-
-    answer = """
-
-
-
-## 質問: Hello
-
-実行時間: `1000.0`
-tool: `user_context_from_github wiki`
-tool input: `プロジェクトのエンジニア`
-log:
-
-```bash
-この情報はGitHubのwikiに記載されている可能性がある。
-Action: user_context_from_github wiki
-Action Input: プロジェクトのエンジニア
-```
-answer:
-
-```bash
-金田　正太郎さん, 島　鉄雄さん, 山形さん, 甲斐さん, ケイさん, ミヤコさん
-```
-
----
-"""
-
     expect = md_file_instance.md_file.get_md_text()
+
+    with open("./src/tests/conv_log/get_md_text.md", "r") as f:
+        answer = f.read()
+
     assert expect == answer
