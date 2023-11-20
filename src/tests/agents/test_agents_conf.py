@@ -186,8 +186,7 @@ def test_get_name_of_tools(appropriate_config):
 def test_generate_md_file(appropriate_config):
     conf, _ = appropriate_config
     expect = conf.generate_md_file().get_md_text()
-    with open("./src/tests/agents/md_content.md", "r") as f:
-        answer = f.read()
+    answer = "\nTEST\n====\n  \n\n### 実験メタデータ\n  \n\n- llm: `gpt-4`\n- エージェントタイプ: `zero-shot-react-description`\n- ユーザーコンテキスト: `torippy01.llm_poc`\n- ツール: `shell, command_predictor, parameter_predictor, human, user_context_github_wiki`\n  \n  \n---  \n"
 
     assert expect == answer
 
