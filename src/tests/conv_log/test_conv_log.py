@@ -43,8 +43,5 @@ def test_dump(conv_log_prop):
     conv_log = ConversationLog(**conv_log_prop)
     conv_log.dump(md_file_instance.md_file)
     expect = md_file_instance.md_file.get_md_text()
-
-    with open("./src/tests/conv_log/get_md_text.md", "r") as f:
-        answer = f.read()
-
+    answer = "\n\n\n\n## 質問: Hello\n  \n実行時間: `1000.0`  \ntool: `user_context_from_github wiki`  \ntool input: `プロジェクトのエンジニア`  \nlog:\n\n```bash\nこの情報はGitHubのwikiに記載されている可能性がある。\nAction: user_context_from_github wiki\nAction Input: プロジェクトのエンジニア\n```  \nanswer: \n\n```bash\n金田\u3000正太郎さん, 島\u3000鉄雄さん, 山形さん, 甲斐さん, ケイさん, ミヤコさん\n```  \n  \n---  \n"
     assert expect == answer
