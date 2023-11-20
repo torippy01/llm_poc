@@ -1,0 +1,1 @@
+from xecretary_core.__about__ import __version__

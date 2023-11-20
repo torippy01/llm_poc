@@ -2,13 +2,11 @@ import os
 from datetime import datetime
 from typing import Optional
 
-from langchain.agents import AgentExecutor, initialize_agent
+from langchain.agents import initialize_agent
 from langchain.callbacks.base import BaseCallbackManager
-from langchain.tools.render import render_text_description
 
 from xecretary_core.agents.conf import Config
 from xecretary_core.agents.mode import AgentExecutionMode
-from xecretary_core.agents.utils import fetch_agent_from_hub
 from xecretary_core.callback.callback import CustomCallbackHandler
 from xecretary_core.evaluation.evaluation_sentences import EvaluateSentence
 from xecretary_core.utils.utility import create_CBmemory, create_llm
@@ -22,30 +20,16 @@ class AgentRunner:
         llm = create_llm(conf.llm_name)
         memory = create_CBmemory()
 
-        if conf.pull:
-            self.agent_executor = AgentExecutor(
-                agent=fetch_agent_from_hub(
-                    pull=conf.pull,
-                    llm=llm,
-                    tool_description=render_text_description(tools),
-                    tool_names=conf.get_name_of_tools(),
-                ),
-                tools=tools,
-                memory=memory,
-                callback_manager=BaseCallbackManager([self.handler]),
-            )
-
-        else:
-            self.agent_executor = initialize_agent(
-                agent=conf.agent_type,
-                tools=tools,
-                llm=llm,
-                memory=memory,
-                return_intermediate_steps=(
-                    conf.agent_type != "conversational-react-description"
-                ),
-                callback_manager=BaseCallbackManager([self.handler]),
-            )
+        self.agent_executor = initialize_agent(
+            agent=conf.agent_type,
+            tools=tools,
+            llm=llm,
+            memory=memory,
+            return_intermediate_steps=(
+                conf.agent_type != "conversational-react-description"
+            ),
+            callback_manager=BaseCallbackManager([self.handler]),
+        )
 
         self.eval_sentences_input_path = conf.eval_sentences_input_path
         self.eval_output_dir = conf.eval_output_dir
@@ -61,11 +45,6 @@ class AgentRunner:
         elif self.agent_execution_mode == AgentExecutionMode.SINGLE:
             self.run_agent_with_single_action()
 
-        else:
-            raise ValueError(
-                f"Invalid value : agent_execution_mode = {self.agent_execution_mode}"
-            )
-
         eval_output_path = os.path.join(
             self.eval_output_dir,
             datetime.utcfromtimestamp(int(datetime.now().timestamp())).strftime(
@@ -79,7 +58,6 @@ class AgentRunner:
         )
 
         self.handler.md_file.create_md_file()
-        return
 
     def run_agent_with_interactive(self) -> None:
         while True:
@@ -90,7 +68,6 @@ class AgentRunner:
             if user_message == "exit":
                 break
             self.agent_executor({"input": user_message})
-        return
 
     def run_agent_with_Q_and_A(self) -> None:
         e_sentence_list = EvaluateSentence.from_yaml_to_list(
@@ -98,7 +75,6 @@ class AgentRunner:
         )
         for e_sentence in e_sentence_list:
             self.agent_executor({"input": e_sentence.input})
-        return
 
     def run_agent_with_single_action(self, user_message=None) -> Optional[str]:
         if user_message:
@@ -106,11 +82,7 @@ class AgentRunner:
             return response.get("output", None)
 
         else:
-            if self.eval_sentences_input_path is None:
-                raise ValueError("Invalid value : eval_sentences_input_path")
-
             e_sentence = EvaluateSentence.from_yaml_to_list(
                 self.eval_sentences_input_path
             )[0]
             self.agent_executor({"input": e_sentence.input})
-            return

@@ -20,13 +20,10 @@ def set_up() -> None:
 
 
 def get_gpt_response(query: str) -> str:
-    return (
-        ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=[{"role": "user", "content": query}]
-        )
-        .choices[0]["message"]["content"]
-        .strip()
+    response = ChatCompletion.create(
+        model="gpt-3.5-turbo", messages=[{"role": "user", "content": query}]
     )
+    return response["choices"][0]["message"]["content"].strip()
 
 
 """

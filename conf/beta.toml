@@ -3,9 +3,9 @@ user_index_dir = "user_context_index"
 agent_type = "zero-shot-react-description"
 agent_execution_mode = "single"
 eval_sentence = "var/eval_sentence/test_ai_answer.yaml"
-md_filepath = "./repo/results/test.md"
+md_filepath = "var/md/test.md"
 md_title = "TEST"
-eval_output_dir = "var/eval_sentence/result/"
+eval_output = "var/eval_sentence/result/"
 
 [[tools_conf]]
 name = "command_predictor"
