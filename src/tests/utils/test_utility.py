@@ -67,8 +67,7 @@ def test_sep_md(tmp_path):
     md_filepath = tmp_path / "test.md"
     md_file = MdUtils(md_filepath)
     sep_md(md_file)
-    with open("src/tests/utils/sep_md.txt", "r") as f:
-        answer = f.read()
+    answer = "\n\n\n  \n  \n---  \n"
     expect = md_file.get_md_text()
     assert expect == answer
 
